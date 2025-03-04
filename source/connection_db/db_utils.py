@@ -1,28 +1,22 @@
-import psycopg2
-import os
 from dotenv import load_dotenv
-
-load_dotenv()
+import os
+from sqlalchemy import create_engine
 
 def get_connection():
-    try:
-        connection = psycopg2.connect(
-            dbname=os.getenv("PG_DATABASE"),
-            user=os.getenv("PG_USER"),
-            host=os.getenv("PG_HOST"),
-            port=os.getenv("PG_PORT"),
-            password=os.getenv("PG_PASSWORD")
-            db_url = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}"
-        )
-        print("Conexión exitosa")
-        return connection
-    except Exception as e:
-        print("Error al conectar a la DB:", e)
-        return None
+    load_dotenv()
+    user = os.getenv('PG_USER')
+    password = os.getenv('PG_PASSWORD')
+    host = os.getenv('PG_HOST')
+    port = os.getenv('PG_PORT')
+    dbname = os.getenv('PG_DATABASE')
+
     
+    db_url = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}"
 
-
-def close_connection(connection):
-    if connection:
-        connection.close()
-        print("Conexión cerrada")
+    try:
+        engine = create_engine(db_url)
+        print("Engine creado exitosamente")
+        return engine
+    except Exception as e:
+        print(f"Error al crear el engine: {e}")
+        return None
