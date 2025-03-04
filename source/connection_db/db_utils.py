@@ -12,12 +12,15 @@ def get_connection():
             host=os.getenv("PG_HOST"),
             port=os.getenv("PG_PORT"),
             password=os.getenv("PG_PASSWORD")
+            db_url = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}"
         )
         print("Conexión exitosa")
         return connection
     except Exception as e:
         print("Error al conectar a la DB:", e)
         return None
+    
+
 
 def close_connection(connection):
     if connection:
