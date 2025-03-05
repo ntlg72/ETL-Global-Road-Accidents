@@ -1,25 +1,3 @@
-## Descripción del Proyecto  
-
-Este proyecto analiza el conjunto de datos **"Global Road Accidents Dataset"** de Kaggle, que contiene 132,000 registros y 30 variables relacionadas con accidentes de tráfico a nivel mundial. El objetivo principal es realizar un Análisis Exploratorio de Datos (EDA) exhaustivo para comprender los patrones, las relaciones y los factores que contribuyen a los accidentes de tráfico, y luego crear visualizaciones claras y efectivas para comunicar estos hallazgos.  
-
-### Objetivos clave:  
-- Identificar áreas geográficas de alto riesgo y patrones temporales.  
-- Analizar la relación entre las condiciones climáticas y la gravedad de los accidentes.  
-- Investigar los tipos de vehículos más involucrados en accidentes graves.  
-- Evaluar el impacto de la infraestructura vial en las tasas de accidentes.  
-
-### Tecnologías utilizadas:  
-- ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54): Para procesamiento y análisis de datos.  
-- ![Pandas](https://img.shields.io/badge/Pandas-2C2D72?logo=pandas&logoColor=white): Para manipulación de datos.  
-- ![Jupyter](https://img.shields.io/badge/Jupyter-F37626?logo=jupyter&logoColor=white): Para análisis interactivo.  
-- ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white): Para almacenamiento de datos.  
-- ![Power BI](https://img.shields.io/badge/Power_BI-F2C811?logo=powerbi&logoColor=black): Para visualizaciones en dashboards.  
-
-
-
-#
-
-
 # Global Road Accidents a Dataset
 Por **Natalia López Gallego**
 
