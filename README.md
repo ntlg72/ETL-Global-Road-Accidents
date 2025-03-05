@@ -1,5 +1,5 @@
 # Global Road Accidents a Dataset
-Por **Natalia López Gallego**
+Por **Michel Burgos Santos**, **Juan David Daza Rivera** y **Natalia López Gallego**.
 
 ## Visión General
 
@@ -42,13 +42,13 @@ Antes de comenzar, asegúrate de cumplir con los siguientes requisitos:
 1. Clona el repositorio:
 
     ```bash
-    git clone [https://github.com/ntlg72/etl-ws-1.git](https://github.com/ntlg72/etl-ws-1.git)
+    git clone https://github.com/ntlg72/road-accidents-analysis.git
     ```
 
 2. Navega al directorio del proyecto:
 
     ```bash
-    cd etl-ws-1
+    cd road-accidents-analysis
     ```
 
 3. Instala las dependencias:
