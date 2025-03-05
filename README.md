@@ -157,23 +157,4 @@ El conjunto de datos incluye:
    - Motocicletas involucradas en el 40% de los accidentes graves.  
    - Vehículos comerciales muestran la tasa más alta de fatalidades.  
 
----
-
-## Documentación  
-
-La documentación técnica completa está disponible en:  
-[![Estado de la Documentación](https://readthedocs.org/projects/road-accidents-analysis/badge/)](https://road-accidents-analysis.readthedocs.io)  
-
----
-
-> **Nota**: Este proyecto fue desarrollado con [Jupyter Lab](https://jupyter.org/) y los dashboards fueron creados con [Power BI](https://powerbi.microsoft.com/).  
-``` 
-
-### Características del documento:
-1. **Estructura clara**: Secciones bien definidas con enlaces internos.  
-2. **Formato Markdown**: Compatible con GitHub, GitLab y otras plataformas.  
-3. **Imágenes y badges**: Incluye ejemplos visuales y badges para tecnologías.  
-4. **Instrucciones detalladas**: Pasos claros para instalación y configuración.  
-5. **Enlaces externos**: Referencias a herramientas y recursos adicionales.  
-
-Puedes copiar y pegar este contenido en un archivo `.md` para usarlo en tu repositorio. ¡Espero que sea útil! 😊
+-
