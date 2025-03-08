@@ -104,11 +104,7 @@ Antes de comenzar, asegúrate de cumplir con los siguientes requisitos:
 
 ## Uso
 
-Ejecuta el script ETL para cargar datos en PostgreSQL:
-
-```bash
-python main.py
-```
+Ejecutar los jupyter notebooks alojados en el directorio "/notebooks", en el orden "001_e.ipynb", "001_eda.ipynb" y "001_tl.ipynb"
 
 # Integración con Power BI
 
@@ -132,4 +128,3 @@ python main.py
     -   Análisis de la duración del proceso de selección
     -   Distribución geográfica de los candidatos
     
-> Written with [StackEdit](https://stackedit.io/).
