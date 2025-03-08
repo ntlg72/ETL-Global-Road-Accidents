@@ -20,3 +20,13 @@ def get_connection():
     except Exception as e:
         print(f"Error al crear el engine: {e}")
         return None
+
+def close_connection(engine):
+    if engine:
+        try:
+            engine.dispose()
+            print("Conexión al Engine cerrada.")
+        except Exception as e:
+            print(f"Error al cerrar la conexión: {e}")
+    else:
+        print("No engine to close.")
