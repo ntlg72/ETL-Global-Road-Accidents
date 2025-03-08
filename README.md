@@ -132,4 +132,3 @@ python main.py
     -   Análisis de la duración del proceso de selección
     -   Distribución geográfica de los candidatos
     
-> Written with [StackEdit](https://stackedit.io/).
