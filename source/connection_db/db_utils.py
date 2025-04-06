@@ -1,6 +1,7 @@
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
+
 
 def get_connection():
     load_dotenv()
@@ -10,7 +11,6 @@ def get_connection():
     port = os.getenv('PG_PORT')
     dbname = os.getenv('PG_DATABASE')
 
-    
     db_url = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}"
 
     try:
@@ -20,6 +20,7 @@ def get_connection():
     except Exception as e:
         print(f"Error al crear el engine: {e}")
         return None
+
 
 def close_connection(engine):
     if engine:
