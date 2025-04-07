@@ -3,9 +3,9 @@ import os
 import pandas as pd
 
 # Añadir el path al módulo de conexión
-sys.path.append(os.path.abspath('../source'))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from connection_db.db_utils import get_connection, close_connection
+from source.connection_db.db_utils import get_connection, close_connection
 
 
 def extract_data(query: str) -> pd.DataFrame:

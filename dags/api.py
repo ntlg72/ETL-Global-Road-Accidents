@@ -5,14 +5,12 @@ import sys
 import os
 import pandas as pd
 
-# Añadir al path los scripts del proyecto
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../source/extract')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../source/transform')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../source/load')))
 
-from extract import extract_data
-from transform import transform_accidents_data
-from load import load_data_to_db
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from source.extract.extract import extract_data
+from source.transform.transform import transform_accidents_data
+from source.load.load import load_data_to_db
+
 
 default_args = {
     'owner': 'airflow',
