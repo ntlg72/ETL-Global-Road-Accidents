@@ -11,6 +11,7 @@ def transform_accidents_data(df: pd.DataFrame) -> pd.DataFrame:
     - Convierte driver_fatigue a tipo booleano
     """
     try:
+        #TODO: eliminar las columnas con dinero
         # Eliminar columna no necesaria
         if "region" in df.columns:
             df = df.drop(columns=["region"])

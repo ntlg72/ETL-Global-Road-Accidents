@@ -1,10 +1,16 @@
+"""ETL DAG para cargar datos de accidentes de tráfico en 
+PostgreSQL usando Airflow"""
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 import sys
 import os
 import pandas as pd
+import logging
 
+# Configurar logging
+logging.basicConfig(level=logging.INFO, 
+                    format="%(asctime)s - %(levelname)s - %(message)s")
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from source.extract.extract import extract_data
@@ -12,6 +18,17 @@ from source.transform.transform import transform_accidents_data
 from source.load.load import load_data_to_db
 
 
+logging.basicConfig(level=logging.INFO, 
+                    format="%(asctime)s - %(levelname)s - %(message)s")
+sys.path.append(os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..')))
+
+# Importar funciones del pipeline
+from source.extract.extract import extract_data
+from source.transform.transform import transform_accidents_data
+from source.load.load import load_data_to_db
+
+# Configuración del DAG
 default_args = {
     'owner': 'airflow',
     'start_date': datetime(2024, 1, 1),
@@ -26,24 +43,32 @@ dag = DAG(
     description='ETL de accidentes de tráfico a PostgreSQL',
 )
 
-# Funciones Python para las tareas
+# Rutas temporales
+EXTRACTED_PATH = '/tmp/extracted_accidents.csv'
+TRANSFORMED_PATH = '/tmp/road_accident_dataset_transformed.csv'
+
+
+# Tarea: Extracción de datos desde PostgreSQL
 def task_extract():
-    df = extract_data()
-    df.to_csv('/tmp/extracted_accidents.csv', index=False)
-    print("✅ Extracción completada")
+    df = extract_data()  # extrae desde la tabla "accidents"
+    df.to_csv(EXTRACTED_PATH, index=False)
+    logging.info("✅ Extracción completada y guardada en CSV.")
 
+
+# Tarea: Transformación de datos
 def task_transform():
-    df = pd.read_csv('/tmp/extracted_accidents.csv')
+    df = pd.read_csv(EXTRACTED_PATH)
     df_transformed = transform_accidents_data(df)
-    df_transformed.to_csv('/tmp/road_accident_dataset_transformed.csv', index=False)
-    print("✅ Transformación completada")
+    df_transformed.to_csv(TRANSFORMED_PATH, index=False)
+    logging.info("✅ Transformación completada y guardada en CSV.")
 
+# Tarea: Carga a la base de datos
 def task_load():
-    df = pd.read_csv('/tmp/road_accident_dataset_transformed.csv')
+    df = pd.read_csv(TRANSFORMED_PATH)
     load_data_to_db(df)
-    print("✅ Carga completada")
+    logging.info("✅ Carga completada en la base de datos.")
 
-# Operadores del DAG
+# Definición de tareas en el DAG
 extract_task = PythonOperator(
     task_id='extract_data',
     python_callable=task_extract,
@@ -62,6 +87,6 @@ load_task = PythonOperator(
     dag=dag,
 )
 
-# Flujo del DAG
+# Flujo de tareas
 extract_task >> transform_task >> load_task
 

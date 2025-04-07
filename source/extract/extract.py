@@ -1,33 +1,35 @@
-import sys
-import os
+"""
+Extract module to retrieve data from a database.
+"""
 import pandas as pd
-
-# Añadir el path al módulo de conexión
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+import logging
 from source.connection_db.db_utils import get_connection, close_connection
 
+# Configurar logging
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s - %(levelname)s - %(message)s")
 
-def extract_data(query: str) -> pd.DataFrame:
+
+def extract_data():
     """
-    Ejecuta una consulta SQL y retorna los resultados como un DataFrame.
+    Ejecuta una consulta SQL sobre la tabla 'accidents' y retorna los resultados como un DataFrame.
+
+    Returns:
+        pd.DataFrame: Resultados de la consulta.
+    Raises:
+        Exception: Si ocurre un error durante la conexión o extracción.
     """
-    engine = None
+    engine = get_connection()
+
     try:
-        engine = get_connection()
-        print("Conexión a la base de datos establecida exitosamente.")
-
-        df = pd.read_sql_query(query, con=engine)
-        print(f"{len(df)} registros extraídos.")
+        logging.info("Conexión a la base de datos establecida exitosamente.")
+        df = pd.read_sql_table("accidents", engine)
+        logging.info(f"{len(df)} registros extraídos de la tabla 'accidents'.")
         return df
-
     except Exception as e:
-        print(f"Error al extraer los datos: {e}")
+        logging.error(f"Error al extraer los datos: {e}")
         raise
-
     finally:
         if engine is not None:
             close_connection(engine)
-            print("Conexión cerrada correctamente.")
-
-
+            logging.info("Conexión cerrada correctamente.")

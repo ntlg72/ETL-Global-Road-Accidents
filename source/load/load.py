@@ -1,11 +1,9 @@
-import sys
-import os
+"""
+Este módulo contiene funciones para cargar datos en una base de datos PostgreSQL.
+El módulo utiliza SQLAlchemy para manejar la conexión y la inserción de datos."""
 import pandas as pd
+from source.connection_db.db_utils import get_connection, close_connection
 
-# Añadir el path al módulo de conexión
-sys.path.append(os.path.abspath('../source'))
-
-from connection_db.db_utils import get_connection, close_connection
 
 def load_data_to_db(df: pd.DataFrame, table_name: str = "accidents"):
     """
