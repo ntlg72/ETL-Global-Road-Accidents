@@ -1,5 +1,3 @@
-"""ETL DAG para cargar datos de accidentes de tráfico en 
-PostgreSQL usando Airflow"""
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
@@ -17,15 +15,6 @@ from source.extract.extract import extract_data
 from source.transform.transform import transform_accidents_data, split_transformed_data
 from source.load.load import load_each_table_to_db
 
-logging.basicConfig(level=logging.INFO, 
-                    format="%(asctime)s - %(levelname)s - %(message)s")
-sys.path.append(os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..')))
-
-# Importar funciones del pipeline
-from source.extract.extract import extract_data
-from source.transform.transform import transform_accidents_data
-from source.load.load import load_data_to_db
 
 # Configuración del DAG
 default_args = {
