@@ -1,10 +1,12 @@
-"""
-Este módulo contiene funciones para cargar datos en una base de datos PostgreSQL.
-El módulo utiliza SQLAlchemy para manejar la conexión y la inserción de datos."""
 import pandas as pd
 from source.connection_db.db_utils import get_connection, close_connection
 import logging
 import os
+
+"""
+Este módulo contiene funciones para cargar datos en una base de datos PostgreSQL.
+El módulo utiliza SQLAlchemy para manejar la conexión y la inserción de datos."""
+
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO, 

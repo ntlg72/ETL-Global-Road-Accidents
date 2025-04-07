@@ -1,13 +1,14 @@
+import os
+import logging
+from sqlalchemy import create_engine
+from dotenv import load_dotenv
+
 """
 db_utils.py
 Este módulo contiene funciones para manejar la conexión a una base de
 datos PostgreSQL utilizando SQLAlchemy.
 """
 
-import os
-import logging
-from sqlalchemy import create_engine
-from dotenv import load_dotenv
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO,

@@ -1,9 +1,10 @@
-"""
-Extract module to retrieve data from a database.
-"""
 import pandas as pd
 import logging
 from source.connection_db.db_utils import get_connection, close_connection
+
+"""
+Extract module to retrieve data from a database.
+"""
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO,
