@@ -14,9 +14,8 @@ logging.basicConfig(level=logging.INFO,
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from source.extract.extract import extract_data
-from source.transform.transform import transform_accidents_data
-from source.load.load import load_data_to_db
-
+from source.transform.transform import transform_accidents_data, split_transformed_data
+from source.load.load import load_each_table_to_db
 
 logging.basicConfig(level=logging.INFO, 
                     format="%(asctime)s - %(levelname)s - %(message)s")
@@ -59,13 +58,14 @@ def task_extract():
 def task_transform():
     df = pd.read_csv(EXTRACTED_PATH)
     df_transformed = transform_accidents_data(df)
-    df_transformed.to_csv(TRANSFORMED_PATH, index=False)
-    logging.info("✅ Transformación completada y guardada en CSV.")
+    split_transformed_data(df_transformed)
+    #df_transformed.to_csv(TRANSFORMED_PATH, index=False)
+
+    logging.info("✅ Transformación completada y guardada en CSVs.")
 
 # Tarea: Carga a la base de datos
 def task_load():
-    df = pd.read_csv(TRANSFORMED_PATH)
-    load_data_to_db(df)
+    load_each_table_to_db()
     logging.info("✅ Carga completada en la base de datos.")
 
 # Definición de tareas en el DAG
