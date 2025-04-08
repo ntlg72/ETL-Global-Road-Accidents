@@ -91,46 +91,41 @@ def transform_accidents_data(df: pd.DataFrame) -> pd.DataFrame:
 def split_transformed_data(df: pd.DataFrame, ruta_salida: str = ruta_salida):
     """
     Prepara las tablas dimensionales y de hechos, y las guarda en CSV.
+    Las claves foráneas se mantienen mediante agrupación (sin eliminar registros previos).
     """
     try:
         os.makedirs(ruta_salida, exist_ok=True)
         logging.info(f"📂 Directorio de salida creado: {ruta_salida}")
 
-        # Crear tablas dimensionales
-        dim_lugar = df[["country", "urban_rural", "road_type", "road_condition"]].drop_duplicates().reset_index(drop=True)
-        dim_lugar["id_lugar"] = dim_lugar.index + 1
+        # Asignar IDs únicos a cada dimensión sin eliminar registros todavía
+        df["id_lugar"] = df.groupby(["country", "urban_rural", "road_type", "road_condition"]).ngroup() + 1
+        df["id_fecha"] = df.groupby(["year", "month", "day_of_week", "time_of_day"]).ngroup() + 1
+        df["id_condiciones"] = df.groupby(["weather_conditions", "visibility_level"]).ngroup() + 1
+        df["id_conductor"] = df.groupby(["driver_age_group", "driver_alcohol_level", "driver_fatigue"]).ngroup() + 1
+        df["id_incidente"] = df.groupby(["accident_severity", "accident_cause"]).ngroup() + 1
+        df["id_vehiculo"] = df.groupby(["vehicle_condition"]).ngroup() + 1
+
+        # Crear tablas dimensionales eliminando duplicados después
+        dim_lugar = df[["id_lugar", "country", "urban_rural", "road_type", "road_condition"]].drop_duplicates()
         dim_lugar.to_csv(os.path.join(ruta_salida, "dim_lugar.csv"), index=False)
 
-        dim_fecha = df[["year", "month", "day_of_week", "time_of_day"]].drop_duplicates().reset_index(drop=True)
-        dim_fecha["id_fecha"] = dim_fecha.index + 1
+        dim_fecha = df[["id_fecha", "year", "month", "day_of_week", "time_of_day"]].drop_duplicates()
         dim_fecha.to_csv(os.path.join(ruta_salida, "dim_fecha.csv"), index=False)
 
-        dim_condiciones = df[["weather_conditions", "visibility_level"]].drop_duplicates().reset_index(drop=True)
-        dim_condiciones["id_condiciones"] = dim_condiciones.index + 1
+        dim_condiciones = df[["id_condiciones", "weather_conditions", "visibility_level"]].drop_duplicates()
         dim_condiciones.to_csv(os.path.join(ruta_salida, "dim_condiciones.csv"), index=False)
 
-        dim_conductor = df[["driver_age_group", "driver_alcohol_level", "driver_fatigue"]].drop_duplicates().reset_index(drop=True)
-        dim_conductor["id_conductor"] = dim_conductor.index + 1
+        dim_conductor = df[["id_conductor", "driver_age_group", "driver_alcohol_level", "driver_fatigue"]].drop_duplicates()
         dim_conductor.to_csv(os.path.join(ruta_salida, "dim_conductor.csv"), index=False)
 
-        dim_incidente = df[["accident_severity", "accident_cause"]].drop_duplicates().reset_index(drop=True)
-        dim_incidente["id_incidente"] = dim_incidente.index + 1
+        dim_incidente = df[["id_incidente", "accident_severity", "accident_cause"]].drop_duplicates()
         dim_incidente.to_csv(os.path.join(ruta_salida, "dim_incidente.csv"), index=False)
 
-        dim_vehiculo = df[["vehicle_condition"]].drop_duplicates().reset_index(drop=True)
-        dim_vehiculo["id_vehiculo"] = dim_vehiculo.index + 1
+        dim_vehiculo = df[["id_vehiculo", "vehicle_condition"]].drop_duplicates()
         dim_vehiculo.to_csv(os.path.join(ruta_salida, "dim_vehiculo.csv"), index=False)
 
-        # Crear tabla de hechos
-        df_hechos = df \
-            .merge(dim_lugar, on=["country", "urban_rural", "road_type", "road_condition"]) \
-            .merge(dim_fecha, on=["year", "month", "day_of_week", "time_of_day"]) \
-            .merge(dim_condiciones, on=["weather_conditions", "visibility_level"]) \
-            .merge(dim_conductor, on=["driver_age_group", "driver_alcohol_level", "driver_fatigue"]) \
-            .merge(dim_incidente, on=["accident_severity", "accident_cause"]) \
-            .merge(dim_vehiculo, on=["vehicle_condition"])
-
-        hechos_accidentes = df_hechos[[
+        # Crear tabla de hechos con claves foráneas
+        hechos_accidentes = df[[
             "number_of_vehicles_involved", "speed_limit", "number_of_injuries", "number_of_fatalities",
             "emergency_response_time", "traffic_volume", "pedestrians_involved", "cyclists_involved", "population_density",
             "id_lugar", "id_fecha", "id_condiciones", "id_conductor", "id_incidente", "id_vehiculo"
