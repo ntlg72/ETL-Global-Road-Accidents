@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO,
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from source.extract.extract import extract_data
 from source.transform.transform import transform_accidents_data, split_transformed_data
-from source.load.load import load_each_table_to_db
+from source.load.load import *
 
 # Configuración del DAG
 default_args = {
@@ -50,7 +50,8 @@ def task_transform():
 
 # Tarea: Carga a la base de datos
 def task_load():
-    load_each_table_to_db(ruta=TRANSFORMED_DIR)
+    create_dimensional_schema()
+    insert_csv_into_table()
     logging.info("✅ Carga completada en la base de datos.")
 
 # Definición de tareas en el DAG
