@@ -5,6 +5,7 @@ import sys
 import os
 import pandas as pd
 import logging
+import tempfile  # ✅ nuevo
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO, 
@@ -14,7 +15,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from source.extract.extract import extract_data
 from source.transform.transform import transform_accidents_data, split_transformed_data
 from source.load.load import load_each_table_to_db
-
 
 # Configuración del DAG
 default_args = {
@@ -31,30 +31,26 @@ dag = DAG(
     description='ETL de accidentes de tráfico a PostgreSQL',
 )
 
-# Rutas temporales
-EXTRACTED_PATH = '/tmp/extracted_accidents.csv'
-TRANSFORMED_PATH = '/tmp/road_accident_dataset_transformed.csv'
-
+# ✅ Rutas temporales seguras
+EXTRACTED_PATH = os.path.join(tempfile.gettempdir(), 'extracted_accidents.csv')
+TRANSFORMED_DIR = os.path.join(tempfile.gettempdir(), 'data')
 
 # Tarea: Extracción de datos desde PostgreSQL
 def task_extract():
-    df = extract_data()  # extrae desde la tabla "accidents"
+    df = extract_data()
     df.to_csv(EXTRACTED_PATH, index=False)
-    logging.info("✅ Extracción completada y guardada en CSV.")
-
+    logging.info(f"✅ Extracción completada: {EXTRACTED_PATH}")
 
 # Tarea: Transformación de datos
 def task_transform():
     df = pd.read_csv(EXTRACTED_PATH)
     df_transformed = transform_accidents_data(df)
-    split_transformed_data(df_transformed)
-    #df_transformed.to_csv(TRANSFORMED_PATH, index=False)
-
-    logging.info("✅ Transformación completada y guardada en CSVs.")
+    split_transformed_data(df_transformed, ruta_salida=TRANSFORMED_DIR)
+    logging.info(f"✅ Transformación completada. Archivos guardados en: {TRANSFORMED_DIR}")
 
 # Tarea: Carga a la base de datos
 def task_load():
-    load_each_table_to_db()
+    load_each_table_to_db(ruta=TRANSFORMED_DIR)
     logging.info("✅ Carga completada en la base de datos.")
 
 # Definición de tareas en el DAG
@@ -78,4 +74,3 @@ load_task = PythonOperator(
 
 # Flujo de tareas
 extract_task >> transform_task >> load_task
-
