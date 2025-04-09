@@ -227,7 +227,7 @@ Crea un archivo `.env` en la raíz del proyecto con esta estructura:
 
 ```env
 PG_USER=postgres
-PG_PASSWORD=pg
+PG_PASSWORD=<contraseña>
 PG_HOST=<IP_OBTENIDA_CON_hostname -I>
 PG_PORT=5432
 PG_DATABASE=gra
