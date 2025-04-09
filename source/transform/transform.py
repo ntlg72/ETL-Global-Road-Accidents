@@ -101,7 +101,7 @@ def split_transformed_data(df: pd.DataFrame, ruta_salida: str = ruta_salida):
         df["id_lugar"] = df.groupby(["country", "urban_rural", "road_type", "road_condition"]).ngroup() + 1
         df["id_fecha"] = df.groupby(["year", "month", "day_of_week", "time_of_day"]).ngroup() + 1
         df["id_condiciones"] = df.groupby(["weather_conditions", "visibility_level"]).ngroup() + 1
-        df["id_conductor"] = df.groupby(["driver_age_group", "driver_alcohol_level", "driver_fatigue"]).ngroup() + 1
+        df["id_conductor"] = df.groupby(["driver_age_group", "driver_alcohol_level", "driver_fatigue", "driver_gender"]).ngroup() + 1
         df["id_incidente"] = df.groupby(["accident_severity", "accident_cause"]).ngroup() + 1
         df["id_vehiculo"] = df.groupby(["vehicle_condition"]).ngroup() + 1
 
@@ -115,7 +115,7 @@ def split_transformed_data(df: pd.DataFrame, ruta_salida: str = ruta_salida):
         dim_condiciones = df[["id_condiciones", "weather_conditions", "visibility_level"]].drop_duplicates()
         dim_condiciones.to_csv(os.path.join(ruta_salida, "dim_condiciones.csv"), index=False)
 
-        dim_conductor = df[["id_conductor", "driver_age_group", "driver_alcohol_level", "driver_fatigue"]].drop_duplicates()
+        dim_conductor = df[["id_conductor", "driver_age_group", "driver_alcohol_level", "driver_fatigue", "driver_gender"]].drop_duplicates()
         dim_conductor.to_csv(os.path.join(ruta_salida, "dim_conductor.csv"), index=False)
 
         dim_incidente = df[["id_incidente", "accident_severity", "accident_cause"]].drop_duplicates()
