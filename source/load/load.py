@@ -129,7 +129,7 @@ def insert_csv_into_table(ruta_csvs: str = ruta_salida):
             df_filtrado = df[columnas_validas]
 
             # Insertar datos sin reemplazar la tabla
-            df_filtrado.to_sql(name=tabla, con=engine, if_exists='replace', index=False)
+            df_filtrado.to_sql(name=tabla, con=engine, if_exists='append', index=False)
             logging.info(f"✅ Datos insertados en '{tabla}' ({len(df_filtrado)} filas).")
 
     except Exception as e:
