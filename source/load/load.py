@@ -48,7 +48,8 @@ def create_dimensional_schema():
                     id_conductor SERIAL PRIMARY KEY,
                     driver_age_group TEXT,
                     driver_alcohol_level TEXT,
-                    driver_fatigue BOOLEAN
+                    driver_fatigue BOOLEAN,
+                    driver_gender TEXT
                 );
                 
                 CREATE TABLE IF NOT EXISTS dim_incidente (
