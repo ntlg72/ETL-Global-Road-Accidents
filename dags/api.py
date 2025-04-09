@@ -5,7 +5,7 @@ import sys
 import os
 import pandas as pd
 import logging
-import tempfile  # ✅ nuevo
+import tempfile 
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO, 
