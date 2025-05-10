@@ -5,7 +5,8 @@ import sys
 import os
 import pandas as pd
 import logging
-import tempfile  # ✅ nuevo
+import tempfile  
+
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO, 
@@ -31,7 +32,7 @@ dag = DAG(
     description='ETL de accidentes de tráfico a PostgreSQL',
 )
 
-# ✅ Rutas temporales seguras
+# Rutas temporales seguras
 EXTRACTED_PATH = os.path.join(tempfile.gettempdir(), 'extracted_accidents.csv')
 TRANSFORMED_DIR = os.path.join(tempfile.gettempdir(), 'data')
 
