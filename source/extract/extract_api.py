@@ -2,6 +2,7 @@ import os
 import requests
 import logging
 import tempfile  # Importamos tempfile para definir la ruta temporal
+import pandas as pd
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO,

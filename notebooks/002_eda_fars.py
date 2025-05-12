@@ -403,7 +403,7 @@ special_codes = {
     'func_sysname': ['Not Reported', 'Unknown']  
 }
 
-# Reemplazar valores especiales por -1 como marcador en lugar de NaN
+# Reemplazar valores especiales por -1 como marcador en lugar de. NaN
 for col, codes in special_codes.items():
     df[col] = df[col].replace({code: -1 for code in codes})
 

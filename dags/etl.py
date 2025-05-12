@@ -21,6 +21,8 @@ from source.load.load import create_dimensional_schema, insert_csv_into_table
 # Importar funciones de API
 from source.extract.extract_api import download_accident_data, download_person_data
 from source.extract.extract_api import load_accident_data, load_person_data, merge_accident_person_data
+from source.transform.transform_api import transform_api_data
+from source.merge import merge_transformed_data  # Nueva función de merge
 
 # Configuración del DAG
 default_args = {
@@ -70,7 +72,7 @@ def process_data():
 
     logging.info(f"✅ Procesamiento completado. Archivo fusionado guardado: {output_file}")
 
-    return output_file
+    return output_file, merged_df
 
 # **Tarea: Transformación de datos de PostgreSQL**
 def task_transform_postgres():
@@ -79,6 +81,34 @@ def task_transform_postgres():
     df_transformed = transform_accidents_data(df)
     split_transformed_data(df_transformed, ruta_salida=TRANSFORMED_DIR)
     logging.info(f"✅ Transformación completada. Archivos guardados en: {TRANSFORMED_DIR}")
+
+# **Tarea: Transformación de datos de la API**
+def task_transform_api():
+    """Transforma los datos fusionados de la API."""
+    input_path = os.path.join(TRANSFORMED_DIR, "merged_fars_data.csv")
+    df = pd.read_csv(input_path)
+    df_transformed = transform_api_data(df)
+    output_path = os.path.join(TRANSFORMED_DIR, "transformed_api_data.csv")
+    df_transformed.to_csv(output_path, index=False)
+    logging.info(f"✅ Transformación de datos API completada: {output_path}")
+
+# **Tarea: Merge final**
+def task_merge_final():
+    """Fusiona los datos transformados desde PostgreSQL y la API externa y los divide en conjuntos procesables."""
+    try:
+        df_transformed_postgres = pd.read_csv(os.path.join(TRANSFORMED_DIR, "transformed_postgres_data.csv"))
+        df_transformed_api = pd.read_csv(os.path.join(TRANSFORMED_DIR, "transformed_api_data.csv"))
+
+        df_final, output_file = merge_transformed_data(df_transformed_postgres, df_transformed_api, ruta_salida=TRANSFORMED_DIR)
+
+        if df_final is not None:
+            split_transformed_data(df_final, ruta_salida=TRANSFORMED_DIR)  # División final de datos
+            logging.info(f"✅ Merge final completado y datos divididos correctamente. Archivo guardado en: {output_file}")
+        else:
+            logging.error("❌ Error en la tarea de merge final.")
+
+    except Exception as e:
+        logging.error(f"❌ Error en `task_merge_final()`: {e}")
 
 # **Tarea: Carga a la base de datos**
 def task_load():
@@ -112,6 +142,18 @@ transform_postgres_task = PythonOperator(
     dag=dag,
 )
 
+transform_api_task = PythonOperator(
+    task_id='transform_api_data',
+    python_callable=task_transform_api,
+    dag=dag,
+)
+
+merge_final_task = PythonOperator(
+    task_id='merge_transformed_data',
+    python_callable=task_merge_final,
+    dag=dag,
+)
+
 load_task = PythonOperator(
     task_id='load_data',
     python_callable=task_load,
@@ -119,4 +161,4 @@ load_task = PythonOperator(
 )
 
 # **Definir el flujo de tareas**
-[extract_api_task, extract_postgres_task] >> process_data_task >> transform_postgres_task >> load_task
+[extract_api_task, extract_postgres_task] >> process_data_task >> [transform_postgres_task, transform_api_task] >> merge_final_task >> load_task
