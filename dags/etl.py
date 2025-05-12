@@ -21,8 +21,8 @@ from source.load.load import create_dimensional_schema, insert_csv_into_table
 # Importar funciones de API
 from source.extract.extract_api import download_accident_data, download_person_data
 from source.extract.extract_api import load_accident_data, load_person_data, merge_accident_person_data
-from source.transform.transform_api import transform_api_data
-from source.merge import merge_transformed_data  # Nueva función de merge
+from source.transform.transform_api import transform_data
+from source.merge.merge import merge_transformed_data # Nueva función de merge
 
 # Configuración del DAG
 default_args = {
@@ -160,5 +160,8 @@ load_task = PythonOperator(
     dag=dag,
 )
 
-# **Definir el flujo de tareas**
-[extract_api_task, extract_postgres_task] >> process_data_task >> [transform_postgres_task, transform_api_task] >> merge_final_task >> load_task
+# Flujo de ejecución en el DAG
+extract_api_task >> process_data_task >> transform_api_task  
+extract_postgres_task >> transform_postgres_task  
+
+[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task  
