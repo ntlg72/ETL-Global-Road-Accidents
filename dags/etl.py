@@ -36,7 +36,7 @@ dag = DAG(
     default_args=default_args,
     schedule_interval='@daily',
     catchup=False,
-    description='ETL de accidentes de tráfico a PostgreSQL',
+    description='ETL de accidentes de tráfico',
 )
 
 # ✅ Rutas temporales seguras
@@ -87,7 +87,7 @@ def task_transform_api():
     """Transforma los datos fusionados de la API."""
     input_path = os.path.join(TRANSFORMED_DIR, "merged_fars_data.csv")
     df = pd.read_csv(input_path)
-    df_transformed = transform_api_data(df)
+    df_transformed = transform_data(df)
     output_path = os.path.join(TRANSFORMED_DIR, "transformed_api_data.csv")
     df_transformed.to_csv(output_path, index=False)
     logging.info(f"✅ Transformación de datos API completada: {output_path}")
@@ -164,4 +164,4 @@ load_task = PythonOperator(
 extract_api_task >> process_data_task >> transform_api_task  
 extract_postgres_task >> transform_postgres_task  
 
-[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task  
+[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task 

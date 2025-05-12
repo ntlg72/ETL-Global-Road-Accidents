@@ -44,3 +44,4 @@ traitlets==5.14.3
 typing_extensions==4.13.1
 tzdata==2025.2
 wcwidth==0.2.13
+pyarrow==20.0.0

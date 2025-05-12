@@ -3,6 +3,7 @@ import requests
 import logging
 import tempfile  # Importamos tempfile para definir la ruta temporal
 import pandas as pd
+import sqlite3
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO,
@@ -99,66 +100,85 @@ def download_person_data(from_year=2017, to_year=2022, output_dir=TRANSFORMED_DI
             logging.error(f"⚠️ Error al descargar datos de Personas para {year}: {e}")
 
 
-def load_accident_data(from_year=2017, to_year=2022, input_dir=TRANSFORMED_DIR):
+def load_accident_data(from_year=2017, to_year=2022, input_dir=TRANSFORMED_DIR, batch_size=10000):
     """
-    Carga los datos de accidentes FARS desde archivos CSV y los concatena en un solo DataFrame.
-
-    Args:
-        from_year (int): Año inicial del rango de carga (por defecto: 2017).
-        to_year (int): Año final del rango de carga (por defecto: 2022).
-        input_dir (str): Directorio donde se almacenan los archivos CSV.
-
-    Returns:
-        pd.DataFrame: DataFrame combinado con los datos de accidentes de todos los años especificados.
+    Carga los datos de accidentes FARS desde archivos CSV y los concatena en un solo DataFrame
+    usando una base de datos temporal para optimizar memoria.
     """
-    dataframes = []
+    conn = sqlite3.connect(':memory:')
+    table_name = 'accidents'
 
     for year in range(from_year, to_year + 1):
-        file_path = os.path.join(input_dir, f'FARS_accident_{year}.csv')  # Ajuste de ruta
+        file_path = os.path.join(input_dir, f'FARS_accident_{year}.csv')
         if os.path.exists(file_path):
-            df = pd.read_csv(file_path)
-            df["Year"] = year  # Agregar columna de referencia de año
-            dataframes.append(df)
+            chunks = pd.read_csv(file_path, low_memory=False, chunksize=batch_size)
+            for i, chunk in enumerate(chunks):
+                # Depuración: Mostrar columnas existentes
+                logging.info(f"Procesando chunk {i} para el año {year}. Columnas: {chunk.columns.tolist()}")
+                # Verificar si existe 'Year' o 'year' (insensible a mayúsculas)
+                year_column_exists = any(col.lower() == 'year' for col in chunk.columns)
+                if not year_column_exists:
+                    chunk["Year"] = year
+                    logging.info(f"Agregada columna Year con valor {year}")
+                else:
+                    # Encontrar el nombre exacto de la columna (para depuración)
+                    existing_year_col = next(col for col in chunk.columns if col.lower() == 'year')
+                    logging.info(f"Columna '{existing_year_col}' ya existe, no se agrega. Valores únicos: {chunk[existing_year_col].unique()}")
+                if i == 0:
+                    chunk.to_sql(table_name, conn, if_exists='replace', index=False)
+                else:
+                    chunk.to_sql(table_name, conn, if_exists='append', index=False)
         else:
             print(f"⚠️ Archivo no encontrado: {file_path}")
 
-    if dataframes:
-        accidents = pd.concat(dataframes, ignore_index=True)
+    try:
+        accidents = pd.read_sql(f"SELECT * FROM {table_name}", conn)
         return accidents
-    else:
-        print("❌ No se encontraron archivos de accidentes.")
-        return pd.DataFrame()  # Retorna un DataFrame vacío en caso de error
+    except Exception as e:
+        print(f"❌ Error al leer la tabla: {e}")
+        return pd.DataFrame()
+    finally:
+        conn.close()
 
-def load_person_data(from_year=2017, to_year=2022, input_dir=TRANSFORMED_DIR):
+def load_person_data(from_year=2017, to_year=2022, input_dir=TRANSFORMED_DIR, batch_size=10000):
     """
-    Carga los datos de personas FARS desde archivos CSV y los concatena en un solo DataFrame.
-
-    Args:
-        from_year (int): Año inicial del rango de carga (por defecto: 2017).
-        to_year (int): Año final del rango de carga (por defecto: 2022).
-        input_dir (str): Directorio donde se almacenan los archivos CSV.
-
-    Returns:
-        pd.DataFrame: DataFrame combinado con los datos de personas de todos los años especificados.
+    Carga los datos de personas FARS desde archivos CSV y los concatena en un solo DataFrame
+    usando una base de datos temporal para optimizar memoria.
     """
-    dataframes = []
+    conn = sqlite3.connect(':memory:')
+    table_name = 'persons'
 
     for year in range(from_year, to_year + 1):
-        file_path = os.path.join(input_dir, f'FARS_person_{year}.csv')  # Ajuste de ruta
+        file_path = os.path.join(input_dir, f'FARS_person_{year}.csv')
         if os.path.exists(file_path):
-            df = pd.read_csv(file_path)
-            df["Year"] = year  # Agregar columna de referencia de año
-            dataframes.append(df)
+            chunks = pd.read_csv(file_path, low_memory=False, chunksize=batch_size)
+            for i, chunk in enumerate(chunks):
+                # Depuración: Mostrar columnas existentes
+                logging.info(f"Procesando chunk {i} para el año {year}. Columnas: {chunk.columns.tolist()}")
+                # Verificar si existe 'Year' o 'year' (insensible a mayúsculas)
+                year_column_exists = any(col.lower() == 'year' for col in chunk.columns)
+                if not year_column_exists:
+                    chunk["Year"] = year
+                    logging.info(f"Agregada columna Year con valor {year}")
+                else:
+                    # Encontrar el nombre exacto de la columna (para depuración)
+                    existing_year_col = next(col for col in chunk.columns if col.lower() == 'year')
+                    logging.info(f"Columna '{existing_year_col}' ya existe, no se agrega. Valores únicos: {chunk[existing_year_col].unique()}")
+                if i == 0:
+                    chunk.to_sql(table_name, conn, if_exists='replace', index=False)
+                else:
+                    chunk.to_sql(table_name, conn, if_exists='append', index=False)
         else:
             print(f"⚠️ Archivo no encontrado: {file_path}")
 
-    if dataframes:
-        persons = pd.concat(dataframes, ignore_index=True)
+    try:
+        persons = pd.read_sql(f"SELECT * FROM {table_name}", conn)
         return persons
-    else:
-        print("❌ No se encontraron archivos de personas.")
-        return pd.DataFrame()  # Retorna un DataFrame vacío en caso de error
-
+    except Exception as e:
+        print(f"❌ Error al leer la tabla: {e}")
+        return pd.DataFrame()
+    finally:
+        conn.close()
 
 def merge_accident_person_data(accidents, persons):
     """

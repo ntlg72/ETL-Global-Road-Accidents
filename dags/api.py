@@ -24,7 +24,7 @@ default_args = {
 }
 
 dag = DAG(
-    dag_id='etl_accidents_pipeline',
+    dag_id='etl_accidents',
     default_args=default_args,
     schedule_interval='@daily',
     catchup=False,
@@ -74,4 +74,4 @@ load_task = PythonOperator(
 )
 
 # Flujo de tareas
-extract_task >> transform_task >> load_task
+extract_task >> transform_task >> load_task 
