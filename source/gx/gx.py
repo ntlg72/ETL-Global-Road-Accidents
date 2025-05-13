@@ -14,7 +14,7 @@ categorical_columns = [
 
 for col in categorical_columns:
     df.expect_column_values_to_be_of_type(col, "object")
-
+#TO-DO: cOLU,NAS CON -1 ojo 
 # 2. Enteros no negativos
 non_negative_columns = [
     "number_of_vehicles_involved", "speed_limit", "number_of_injuries",
@@ -70,7 +70,7 @@ expected_columns = [
     # Dim_Vehiculo
     "vehicle_condition"
 ]
-
+#TO-DO: rEVISAR TIPO DE DATOS DATE-TIME
 df.expect_table_columns_to_match_set(expected_columns)
 
 # (Opcional) Mostrar resultados
