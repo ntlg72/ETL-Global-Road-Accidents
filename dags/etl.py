@@ -1,11 +1,16 @@
-from airflow import DAG
-from airflow.operators.python import PythonOperator
-from datetime import datetime
-import sys
 import os
-import pandas as pd
+import sys
 import logging
 import tempfile
+from datetime import datetime
+
+import pandas as pd
+
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+
+from source.kafka.producer import send_dataframe_to_kafka
+
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO, 
@@ -117,6 +122,16 @@ def task_load():
     insert_csv_into_table()
     logging.info("✅ Carga completada en la base de datos.")
 
+# Nueva tarea para enviar mensajes a Kafka
+def task_send_to_kafka():
+    """Envía los datos finales a Kafka fila por fila con retardo."""
+    try:
+        final_path = os.path.join(TRANSFORMED_DIR, "merged_final_data.csv")
+        df_final = pd.read_csv(final_path)
+        send_dataframe_to_kafka(df_final, topic="road_accidents", sleep_seconds=3)
+    except Exception as e:
+        logging.error(f"❌ Error al enviar datos a Kafka: {e}")
+
 # **Definición de tareas en Airflow**
 extract_api_task = PythonOperator(
     task_id='extract_data_api',
@@ -160,8 +175,14 @@ load_task = PythonOperator(
     dag=dag,
 )
 
+send_kafka_task = PythonOperator(
+    task_id='send_data_to_kafka',
+    python_callable=task_send_to_kafka,
+    dag=dag,
+)
+
 # Flujo de ejecución en el DAG
 extract_api_task >> process_data_task >> transform_api_task  
 extract_postgres_task >> transform_postgres_task  
 
-[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task 
+[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task >> send_kafka_task

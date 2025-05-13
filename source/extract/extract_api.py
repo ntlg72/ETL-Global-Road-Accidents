@@ -100,10 +100,6 @@ def download_person_data(from_year=2017, to_year=2022, output_dir=TRANSFORMED_DI
             logging.error(f"⚠️ Error al descargar datos de Personas para {year}: {e}")
 
 
-#TO-DO : Cambiar el nombre de la función a load_accident_data, y load_person_data, desde el dowload, y estandarizar el nombre de las variables,
-
-
-
 def load_accident_data(from_year=2017, to_year=2022, input_dir=TRANSFORMED_DIR, batch_size=10000):
     """
     Carga los datos de accidentes FARS desde archivos CSV y los concatena en un solo DataFrame

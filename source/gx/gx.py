@@ -1,8 +1,40 @@
-import great_expectations as ge
+import great_expectations as gx
+import pandas as pd
+import os
+import json
+import tempfile
+from datetime import datetime
 
-# Asumimos que df es un DataFrame de Pandas
-# Si usas un Validator (recomendado en GE v3), reemplaza `df` por `validator`
-df = ge.from_pandas(your_dataframe_here)
+# Ruta al archivo transformado
+TRANSFORMED_DIR = os.path.join(tempfile.gettempdir(), 'data')
+csv_path = os.path.join(TRANSFORMED_DIR, "transformed_accidents_data.csv")
+
+# Leer archivo
+df = pd.read_csv(csv_path)
+
+# 2. Crear contexto y conectar datos
+
+context = gx.get_context()
+data_source = context.data_sources.add_pandas("pandas")
+data_asset = data_source.add_dataframe_asset(name="accidentes_dataframe")
+batch_definition = data_asset.add_batch_definition_whole_dataframe("accidentes_batch")
+batch = batch_definition.get_batch(batch_parameters={"dataframe": df})
+
+# 3. Carpeta para resultados
+results_dir = "../gx/results"
+os.makedirs(results_dir, exist_ok=True)
+
+# Función auxiliar para guardar resultados
+def guardar_resultado(nombre, resultado):
+    ruta = os.path.join(results_dir, f"{nombre}.json")
+    with open(ruta, "w") as f:
+        json.dump(resultado.to_dict(), f, indent=2)
+
+# Timestamp para nombre de archivo
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+# 4. Expectativas a aplicar
+resultados = {}
 
 # 1. Categóricas
 categorical_columns = [
@@ -13,28 +45,43 @@ categorical_columns = [
 ]
 
 for col in categorical_columns:
-    df.expect_column_values_to_be_of_type(col, "object")
-#TO-DO: cOLU,NAS CON -1 ojo 
+    expectation = gx.expectations.ExpectColumnValuesToBeOfType(column=col, type_="object")
+    resultado = batch.validate(expectation)
+    guardar_resultado(f"{timestamp}_type_{col}", resultado)
+
 # 2. Enteros no negativos
 non_negative_columns = [
-    "number_of_vehicles_involved", "speed_limit", "number_of_injuries",
-    "number_of_fatalities", "traffic_volume", "pedestrians_involved",
-    "cyclists_involved", "population_density"
+    "number_of_vehicles_involved", "number_of_fatalities", "pedestrians_involved"
 ]
 
 for col in non_negative_columns:
-    df.expect_column_values_to_be_between(col, min_value=0)
+    expectation = gx.expectations.ExpectColumnValuesToBeBetween(column=col, min_value=0)
+    resultado = batch.validate(expectation)
+    guardar_resultado(f"{timestamp}_nonneg_{col}", resultado)
 
-# 3. Asegurar enteros (no floats)
+# 3. Columnas que aceptan -1
+columns_allowing_negative_one = [
+    "road_condition", "accident_severity", "driver_fatigue",
+    "speed_limit", "number_of_injuries", "cyclists_involved", "population_density",  "traffic_volume"
+]
+
+for col in columns_allowing_negative_one:
+    expectation = gx.expectations.ExpectColumnValuesToBeBetween(column=col, min_value=-1)
+    resultado = batch.validate(expectation)
+    guardar_resultado(f"{timestamp}_neg1_{col}", resultado)
+
+# 4. Enteros
 integer_columns = [
     "number_of_vehicles_involved", "number_of_injuries",
     "number_of_fatalities", "pedestrians_involved", "cyclists_involved"
 ]
 
 for col in integer_columns:
-    df.expect_column_values_to_be_of_type(col, "int64")
+    expectation = gx.expectations.ExpectColumnValuesToBeOfType(column=col, type_="int64")
+    resultado = batch.validate(expectation)
+    guardar_resultado(f"{timestamp}_int_{col}", resultado)
 
-# 4. Columnas que pueden tener nulos (mostly = 0.8)
+# 5. Columnas que permiten nulos
 nullable_columns = [
     "road_condition", "accident_severity", "speed_limit",
     "number_of_injuries", "traffic_volume", "cyclists_involved",
@@ -42,37 +89,27 @@ nullable_columns = [
 ]
 
 for col in nullable_columns:
-    df.expect_column_values_to_not_be_null(column=col, mostly=0.8)
+    expectation = gx.expectations.ExpectColumnValuesToNotBeNull(column=col, mostly=0.8)
+    resultado = batch.validate(expectation)
+    guardar_resultado(f"{timestamp}_nullable_{col}", resultado)
 
-# 5. Verificación de existencia de columnas
+# 6. Columnas esperadas
 expected_columns = [
-    # Hechos_Accidentes
     "number_of_vehicles_involved", "speed_limit", "number_of_injuries", "number_of_fatalities",
     "emergency_response_time", "traffic_volume", "pedestrians_involved", "cyclists_involved",
     "population_density", "fecha_id", "lugar_id", "condiciones_id", "conductor_id",
     "vehiculo_id", "incidente_id",
-
-    # Dim_Fecha
     "year", "month", "day_of_week", "time_of_day",
-
-    # Dim_Lugar
     "country", "urban_rural", "road_type", "road_condition",
-
-    # Dim_Condiciones
     "weather_conditions", "visibility_level",
-
-    # Dim_Conductor
     "driver_age_group", "driver_alcohol_level", "driver_fatigue", "driver_gender",
-
-    # Dim_Incidente
     "accident_severity", "accident_cause",
-
-    # Dim_Vehiculo
     "vehicle_condition"
 ]
-#TO-DO: rEVISAR TIPO DE DATOS DATE-TIME
-df.expect_table_columns_to_match_set(expected_columns)
 
-# (Opcional) Mostrar resultados
-results = df.validate()
-print(results)
+expectation = gx.expectations.ExpectTableColumnsToMatchSet(column_set=expected_columns)
+resultado = batch.validate(expectation)
+guardar_resultado(f"{timestamp}_expected_columns", resultado)
+
+print(f"✔️ Validaciones completadas. Resultados guardados en: {results_dir}")
+

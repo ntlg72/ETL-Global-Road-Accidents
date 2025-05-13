@@ -21,6 +21,7 @@ load_dotenv()
 DATABASE_MAP = {
     "default": os.getenv("PG_DATABASE"),
     "dimensional": os.getenv("PG_DATABASE_DIMENSIONAL"),
+    "kafka": os.getenv("PG_DATABASE_KAFKA")
 }
 
 def get_connection(database_name: str = "default"):
