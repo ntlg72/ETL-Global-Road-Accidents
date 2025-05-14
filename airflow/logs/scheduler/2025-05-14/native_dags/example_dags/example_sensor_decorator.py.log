@@ -1,0 +1,15 @@
+[2025-05-14T10:30:28.414-0500] {processor.py:186} INFO - Started process (PID=9464) to work on /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_sensor_decorator.py
+[2025-05-14T10:30:28.415-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_sensor_decorator.py for tasks to queue
+[2025-05-14T10:30:28.417-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.417-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_sensor_decorator.py
+[2025-05-14T10:30:28.426-0500] {processor.py:925} INFO - DAG(s) 'example_sensor_decorator' retrieved from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_sensor_decorator.py
+[2025-05-14T10:30:28.563-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.562-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG:example_sensor_decorator
+[2025-05-14T10:30:28.586-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.586-0500] {override.py:1912} INFO - Created Permission View: can read on DAG:example_sensor_decorator
+[2025-05-14T10:30:28.609-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.609-0500] {override.py:1912} INFO - Created Permission View: can edit on DAG:example_sensor_decorator
+[2025-05-14T10:30:28.651-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.650-0500] {override.py:1912} INFO - Created Permission View: can create on DAG Run:example_sensor_decorator
+[2025-05-14T10:30:28.677-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.676-0500] {override.py:1912} INFO - Created Permission View: menu access on DAG Run:example_sensor_decorator
+[2025-05-14T10:30:28.703-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.702-0500] {override.py:1912} INFO - Created Permission View: can read on DAG Run:example_sensor_decorator
+[2025-05-14T10:30:28.732-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.731-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG Run:example_sensor_decorator
+[2025-05-14T10:30:28.732-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.732-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T10:30:28.754-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.753-0500] {dag.py:3262} INFO - Creating ORM DAG for example_sensor_decorator
+[2025-05-14T10:30:28.755-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:28.755-0500] {dag.py:4180} INFO - Setting next_dagrun for example_sensor_decorator to None, run_after=None
+[2025-05-14T10:30:28.807-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_sensor_decorator.py took 0.398 seconds

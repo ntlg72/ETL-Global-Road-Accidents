@@ -1,0 +1,15 @@
+[2025-05-14T10:30:16.461-0500] {processor.py:186} INFO - Started process (PID=9274) to work on /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_dag.py
+[2025-05-14T10:30:16.462-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_dag.py for tasks to queue
+[2025-05-14T10:30:16.466-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.465-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_dag.py
+[2025-05-14T10:30:16.477-0500] {processor.py:925} INFO - DAG(s) 'tutorial_dag' retrieved from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_dag.py
+[2025-05-14T10:30:16.684-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.683-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG:tutorial_dag
+[2025-05-14T10:30:16.705-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.704-0500] {override.py:1912} INFO - Created Permission View: can read on DAG:tutorial_dag
+[2025-05-14T10:30:16.720-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.719-0500] {override.py:1912} INFO - Created Permission View: can edit on DAG:tutorial_dag
+[2025-05-14T10:30:16.743-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.742-0500] {override.py:1912} INFO - Created Permission View: can create on DAG Run:tutorial_dag
+[2025-05-14T10:30:16.755-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.755-0500] {override.py:1912} INFO - Created Permission View: menu access on DAG Run:tutorial_dag
+[2025-05-14T10:30:16.768-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.768-0500] {override.py:1912} INFO - Created Permission View: can read on DAG Run:tutorial_dag
+[2025-05-14T10:30:16.782-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.781-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG Run:tutorial_dag
+[2025-05-14T10:30:16.783-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.782-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T10:30:16.804-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.804-0500] {dag.py:3262} INFO - Creating ORM DAG for tutorial_dag
+[2025-05-14T10:30:16.805-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:16.805-0500] {dag.py:4180} INFO - Setting next_dagrun for tutorial_dag to None, run_after=None
+[2025-05-14T10:30:16.838-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_dag.py took 0.384 seconds

@@ -5,18 +5,16 @@ import tempfile
 from datetime import datetime
 
 import pandas as pd
-
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-
-from source.kafka.producer import send_dataframe_to_kafka
-
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO, 
                     format="%(asctime)s - %(levelname)s - %(message)s")
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from kafka_utils.producer import send_dataframe_to_kafka
 
 # Importar funciones de PostgreSQL y transformación
 from source.extract.extract import extract_data

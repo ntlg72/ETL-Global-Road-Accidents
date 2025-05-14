@@ -1,0 +1,48 @@
+[2025-05-14T11:38:17.738-0500] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2025-05-14T11:38:17.749-0500] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl.extract_data_postgres scheduled__2025-05-13T00:00:00+00:00 [queued]>
+[2025-05-14T11:38:17.758-0500] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl.extract_data_postgres scheduled__2025-05-13T00:00:00+00:00 [queued]>
+[2025-05-14T11:38:17.758-0500] {taskinstance.py:2867} INFO - Starting attempt 1 of 2
+[2025-05-14T11:38:17.776-0500] {taskinstance.py:2890} INFO - Executing <Task(PythonOperator): extract_data_postgres> on 2025-05-13 00:00:00+00:00
+[2025-05-14T11:38:17.788-0500] {standard_task_runner.py:104} INFO - Running: ['airflow', 'tasks', 'run', 'etl', 'extract_data_postgres', 'scheduled__2025-05-13T00:00:00+00:00', '--job-id', '10', '--raw', '--subdir', 'DAGS_FOLDER/api.py', '--cfg-path', '/tmp/tmpv1aeabnv']
+[2025-05-14T11:38:17.792-0500] {standard_task_runner.py:105} INFO - Job 10: Subtask extract_data_postgres
+[2025-05-14T11:38:17.794-0500] {logging_mixin.py:190} WARNING - /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:70 DeprecationWarning: This process (pid=43166) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-05-14T11:38:17.795-0500] {standard_task_runner.py:72} INFO - Started process 43217 to run task
+[2025-05-14T11:38:17.847-0500] {task_command.py:467} INFO - Running <TaskInstance: etl.extract_data_postgres scheduled__2025-05-13T00:00:00+00:00 [running]> on host DESKTOP-43HC35D.
+[2025-05-14T11:38:17.987-0500] {taskinstance.py:3134} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl' AIRFLOW_CTX_TASK_ID='extract_data_postgres' AIRFLOW_CTX_EXECUTION_DATE='2025-05-13T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-05-13T00:00:00+00:00'
+[2025-05-14T11:38:17.992-0500] {taskinstance.py:732} INFO - ::endgroup::
+[2025-05-14T11:38:18.108-0500] {db_utils.py:50} INFO - ✅ Conexión a la base de datos 'gra' creada exitosamente.
+[2025-05-14T11:38:18.109-0500] {extract.py:26} INFO - Conexión a la base de datos establecida exitosamente.
+[2025-05-14T11:38:20.454-0500] {extract.py:28} INFO - 132000 registros extraídos de la tabla 'accidents'.
+[2025-05-14T11:38:20.454-0500] {db_utils.py:64} INFO - 🔌 Conexión al engine cerrada correctamente.
+[2025-05-14T11:38:20.455-0500] {extract.py:36} INFO - Conexión cerrada correctamente.
+[2025-05-14T11:38:22.506-0500] {api.py:61} INFO - ✅ Extracción desde PostgreSQL completada: /tmp/extracted_accidents.csv
+[2025-05-14T11:38:22.660-0500] {python.py:240} INFO - Done. Returned value was: None
+[2025-05-14T11:38:22.667-0500] {taskinstance.py:341} INFO - ::group::Post task execution logs
+[2025-05-14T11:38:22.668-0500] {taskinstance.py:353} INFO - Marking task as SUCCESS. dag_id=etl, task_id=extract_data_postgres, run_id=scheduled__2025-05-13T00:00:00+00:00, execution_date=20250513T000000, start_date=20250514T163817, end_date=20250514T163822
+[2025-05-14T11:38:22.727-0500] {local_task_job_runner.py:266} INFO - Task exited with return code 0
+[2025-05-14T11:38:22.752-0500] {taskinstance.py:3901} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2025-05-14T11:38:22.759-0500] {local_task_job_runner.py:245} INFO - ::endgroup::
+[2025-05-14T13:16:59.727-0500] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2025-05-14T13:16:59.754-0500] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl.extract_data_postgres scheduled__2025-05-13T00:00:00+00:00 [queued]>
+[2025-05-14T13:16:59.770-0500] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl.extract_data_postgres scheduled__2025-05-13T00:00:00+00:00 [queued]>
+[2025-05-14T13:16:59.771-0500] {taskinstance.py:2867} INFO - Starting attempt 1 of 2
+[2025-05-14T13:16:59.811-0500] {taskinstance.py:2890} INFO - Executing <Task(PythonOperator): extract_data_postgres> on 2025-05-13 00:00:00+00:00
+[2025-05-14T13:16:59.838-0500] {standard_task_runner.py:104} INFO - Running: ['airflow', 'tasks', 'run', 'etl', 'extract_data_postgres', 'scheduled__2025-05-13T00:00:00+00:00', '--job-id', '18', '--raw', '--subdir', 'DAGS_FOLDER/api.py', '--cfg-path', '/tmp/tmp9tbr04xs']
+[2025-05-14T13:16:59.842-0500] {standard_task_runner.py:105} INFO - Job 18: Subtask extract_data_postgres
+[2025-05-14T13:16:59.853-0500] {logging_mixin.py:190} WARNING - /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:70 DeprecationWarning: This process (pid=53656) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-05-14T13:16:59.854-0500] {standard_task_runner.py:72} INFO - Started process 53755 to run task
+[2025-05-14T13:16:59.918-0500] {task_command.py:467} INFO - Running <TaskInstance: etl.extract_data_postgres scheduled__2025-05-13T00:00:00+00:00 [running]> on host DESKTOP-43HC35D.
+[2025-05-14T13:17:00.006-0500] {taskinstance.py:3134} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='etl' AIRFLOW_CTX_TASK_ID='extract_data_postgres' AIRFLOW_CTX_EXECUTION_DATE='2025-05-13T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-05-13T00:00:00+00:00'
+[2025-05-14T13:17:00.008-0500] {taskinstance.py:732} INFO - ::endgroup::
+[2025-05-14T13:17:00.025-0500] {db_utils.py:50} INFO - ✅ Conexión a la base de datos 'gra' creada exitosamente.
+[2025-05-14T13:17:00.026-0500] {extract.py:26} INFO - Conexión a la base de datos establecida exitosamente.
+[2025-05-14T13:17:03.470-0500] {extract.py:28} INFO - 132000 registros extraídos de la tabla 'accidents'.
+[2025-05-14T13:17:03.471-0500] {db_utils.py:64} INFO - 🔌 Conexión al engine cerrada correctamente.
+[2025-05-14T13:17:03.472-0500] {extract.py:36} INFO - Conexión cerrada correctamente.
+[2025-05-14T13:17:06.068-0500] {api.py:61} INFO - ✅ Extracción desde PostgreSQL completada: /tmp/extracted_accidents.csv
+[2025-05-14T13:17:06.326-0500] {python.py:240} INFO - Done. Returned value was: None
+[2025-05-14T13:17:06.334-0500] {taskinstance.py:341} INFO - ::group::Post task execution logs
+[2025-05-14T13:17:06.334-0500] {taskinstance.py:353} INFO - Marking task as SUCCESS. dag_id=etl, task_id=extract_data_postgres, run_id=scheduled__2025-05-13T00:00:00+00:00, execution_date=20250513T000000, start_date=20250514T181659, end_date=20250514T181706
+[2025-05-14T13:17:06.419-0500] {local_task_job_runner.py:266} INFO - Task exited with return code 0
+[2025-05-14T13:17:06.452-0500] {taskinstance.py:3901} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2025-05-14T13:17:06.459-0500] {local_task_job_runner.py:245} INFO - ::endgroup::

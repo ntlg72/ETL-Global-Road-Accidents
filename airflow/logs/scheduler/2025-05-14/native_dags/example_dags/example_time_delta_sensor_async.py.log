@@ -1,0 +1,5 @@
+[2025-05-14T10:30:30.015-0500] {processor.py:186} INFO - Started process (PID=9477) to work on /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_time_delta_sensor_async.py
+[2025-05-14T10:30:30.015-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_time_delta_sensor_async.py for tasks to queue
+[2025-05-14T10:30:30.018-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:30.017-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_time_delta_sensor_async.py
+[2025-05-14T10:30:30.026-0500] {processor.py:925} INFO - DAG(s) 'example_time_delta_sensor_async' retrieved from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_time_delta_sensor_async.py
+[2025-05-14T10:30:31.941-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:31.940-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG:example_time_delta_sensor_async

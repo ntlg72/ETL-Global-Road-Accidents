@@ -1,0 +1,24 @@
+[2025-05-14T10:30:19.426-0500] {processor.py:186} INFO - Started process (PID=9314) to work on /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_xcomargs.py
+[2025-05-14T10:30:19.427-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_xcomargs.py for tasks to queue
+[2025-05-14T10:30:19.432-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.431-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_xcomargs.py
+[2025-05-14T10:30:19.448-0500] {processor.py:925} INFO - DAG(s) 'example_xcom_args', 'example_xcom_args_with_operators' retrieved from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_xcomargs.py
+[2025-05-14T10:30:19.611-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.610-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG:example_xcom_args
+[2025-05-14T10:30:19.629-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.628-0500] {override.py:1912} INFO - Created Permission View: can read on DAG:example_xcom_args
+[2025-05-14T10:30:19.647-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.646-0500] {override.py:1912} INFO - Created Permission View: can edit on DAG:example_xcom_args
+[2025-05-14T10:30:19.672-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.671-0500] {override.py:1912} INFO - Created Permission View: can create on DAG Run:example_xcom_args
+[2025-05-14T10:30:19.689-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.688-0500] {override.py:1912} INFO - Created Permission View: menu access on DAG Run:example_xcom_args
+[2025-05-14T10:30:19.710-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.709-0500] {override.py:1912} INFO - Created Permission View: can read on DAG Run:example_xcom_args
+[2025-05-14T10:30:19.725-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.724-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG Run:example_xcom_args
+[2025-05-14T10:30:19.760-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.759-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG:example_xcom_args_with_operators
+[2025-05-14T10:30:19.779-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.778-0500] {override.py:1912} INFO - Created Permission View: can read on DAG:example_xcom_args_with_operators
+[2025-05-14T10:30:19.793-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.793-0500] {override.py:1912} INFO - Created Permission View: can edit on DAG:example_xcom_args_with_operators
+[2025-05-14T10:30:19.816-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.815-0500] {override.py:1912} INFO - Created Permission View: can create on DAG Run:example_xcom_args_with_operators
+[2025-05-14T10:30:19.830-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.830-0500] {override.py:1912} INFO - Created Permission View: menu access on DAG Run:example_xcom_args_with_operators
+[2025-05-14T10:30:19.846-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:19.845-0500] {override.py:1912} INFO - Created Permission View: can read on DAG Run:example_xcom_args_with_operators
+[2025-05-14T10:30:20.191-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:20.190-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG Run:example_xcom_args_with_operators
+[2025-05-14T10:30:20.193-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:20.192-0500] {dag.py:3239} INFO - Sync 2 DAGs
+[2025-05-14T10:30:20.224-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:20.224-0500] {dag.py:3262} INFO - Creating ORM DAG for example_xcom_args_with_operators
+[2025-05-14T10:30:20.226-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:20.226-0500] {dag.py:3262} INFO - Creating ORM DAG for example_xcom_args
+[2025-05-14T10:30:20.228-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:20.227-0500] {dag.py:4180} INFO - Setting next_dagrun for example_xcom_args to None, run_after=None
+[2025-05-14T10:30:20.230-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:20.229-0500] {dag.py:4180} INFO - Setting next_dagrun for example_xcom_args_with_operators to None, run_after=None
+[2025-05-14T10:30:20.779-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/example_xcomargs.py took 1.367 seconds

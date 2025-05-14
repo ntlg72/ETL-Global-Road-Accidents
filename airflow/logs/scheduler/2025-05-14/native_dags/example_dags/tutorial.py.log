@@ -1,0 +1,15 @@
+[2025-05-14T10:30:14.342-0500] {processor.py:186} INFO - Started process (PID=9246) to work on /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial.py
+[2025-05-14T10:30:14.343-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial.py for tasks to queue
+[2025-05-14T10:30:14.350-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.348-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial.py
+[2025-05-14T10:30:14.366-0500] {processor.py:925} INFO - DAG(s) 'tutorial' retrieved from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial.py
+[2025-05-14T10:30:14.708-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.706-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG:tutorial
+[2025-05-14T10:30:14.742-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.741-0500] {override.py:1912} INFO - Created Permission View: can read on DAG:tutorial
+[2025-05-14T10:30:14.767-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.766-0500] {override.py:1912} INFO - Created Permission View: can edit on DAG:tutorial
+[2025-05-14T10:30:14.817-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.816-0500] {override.py:1912} INFO - Created Permission View: can create on DAG Run:tutorial
+[2025-05-14T10:30:14.860-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.858-0500] {override.py:1912} INFO - Created Permission View: menu access on DAG Run:tutorial
+[2025-05-14T10:30:14.885-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.884-0500] {override.py:1912} INFO - Created Permission View: can read on DAG Run:tutorial
+[2025-05-14T10:30:14.907-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.907-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG Run:tutorial
+[2025-05-14T10:30:14.908-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.908-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T10:30:14.934-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.934-0500] {dag.py:3262} INFO - Creating ORM DAG for tutorial
+[2025-05-14T10:30:14.973-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:14.972-0500] {dag.py:4180} INFO - Setting next_dagrun for tutorial to 2025-05-13 00:00:00+00:00, run_after=2025-05-14 00:00:00+00:00
+[2025-05-14T10:30:15.159-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial.py took 0.825 seconds

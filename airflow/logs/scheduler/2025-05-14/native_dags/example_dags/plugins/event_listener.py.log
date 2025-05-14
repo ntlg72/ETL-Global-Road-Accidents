@@ -1,0 +1,5 @@
+[2025-05-14T10:30:24.563-0500] {processor.py:186} INFO - Started process (PID=9391) to work on /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/plugins/event_listener.py
+[2025-05-14T10:30:24.564-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/plugins/event_listener.py for tasks to queue
+[2025-05-14T10:30:24.569-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:24.568-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/plugins/event_listener.py
+[2025-05-14T10:30:24.573-0500] {processor.py:927} WARNING - No viable dags retrieved from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/plugins/event_listener.py
+[2025-05-14T10:30:24.594-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/plugins/event_listener.py took 0.040 seconds

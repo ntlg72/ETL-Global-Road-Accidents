@@ -1,0 +1,6 @@
+[2025-05-14T10:30:11.553-0500] {processor.py:186} INFO - Started process (PID=9213) to work on /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_taskflow_api_virtualenv.py
+[2025-05-14T10:30:11.554-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_taskflow_api_virtualenv.py for tasks to queue
+[2025-05-14T10:30:11.558-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:11.557-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_taskflow_api_virtualenv.py
+[2025-05-14T10:30:11.676-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:11.675-0500] {tutorial_taskflow_api_virtualenv.py:29} WARNING - The tutorial_taskflow_api_virtualenv example DAG requires virtualenv, please install it.
+[2025-05-14T10:30:11.676-0500] {processor.py:927} WARNING - No viable dags retrieved from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_taskflow_api_virtualenv.py
+[2025-05-14T10:30:11.694-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_taskflow_api_virtualenv.py took 0.157 seconds

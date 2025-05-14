@@ -1,0 +1,15 @@
+[2025-05-14T10:30:12.875-0500] {processor.py:186} INFO - Started process (PID=9239) to work on /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_objectstorage.py
+[2025-05-14T10:30:12.878-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_objectstorage.py for tasks to queue
+[2025-05-14T10:30:12.882-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:12.881-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_objectstorage.py
+[2025-05-14T10:30:12.904-0500] {processor.py:925} INFO - DAG(s) 'tutorial_objectstorage' retrieved from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_objectstorage.py
+[2025-05-14T10:30:13.100-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.098-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG:tutorial_objectstorage
+[2025-05-14T10:30:13.124-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.123-0500] {override.py:1912} INFO - Created Permission View: can read on DAG:tutorial_objectstorage
+[2025-05-14T10:30:13.137-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.137-0500] {override.py:1912} INFO - Created Permission View: can edit on DAG:tutorial_objectstorage
+[2025-05-14T10:30:13.158-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.157-0500] {override.py:1912} INFO - Created Permission View: can create on DAG Run:tutorial_objectstorage
+[2025-05-14T10:30:13.171-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.170-0500] {override.py:1912} INFO - Created Permission View: menu access on DAG Run:tutorial_objectstorage
+[2025-05-14T10:30:13.183-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.183-0500] {override.py:1912} INFO - Created Permission View: can read on DAG Run:tutorial_objectstorage
+[2025-05-14T10:30:13.195-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.194-0500] {override.py:1912} INFO - Created Permission View: can delete on DAG Run:tutorial_objectstorage
+[2025-05-14T10:30:13.196-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.195-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T10:30:13.216-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.215-0500] {dag.py:3262} INFO - Creating ORM DAG for tutorial_objectstorage
+[2025-05-14T10:30:13.217-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:13.217-0500] {dag.py:4180} INFO - Setting next_dagrun for tutorial_objectstorage to None, run_after=None
+[2025-05-14T10:30:13.262-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/tutorial_objectstorage.py took 0.399 seconds
