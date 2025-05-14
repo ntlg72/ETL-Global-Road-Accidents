@@ -1,5 +1,0 @@
-[2025-05-14T10:30:09.371-0500] {processor.py:186} INFO - Started process (PID=9168) to work on /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/subdags/subdag.py
-[2025-05-14T10:30:09.373-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/subdags/subdag.py for tasks to queue
-[2025-05-14T10:30:09.382-0500] {logging_mixin.py:190} INFO - [2025-05-14T10:30:09.379-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/subdags/subdag.py
-[2025-05-14T10:30:09.391-0500] {processor.py:927} WARNING - No viable dags retrieved from /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/subdags/subdag.py
-[2025-05-14T10:30:09.430-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/venv/lib/python3.12/site-packages/airflow/example_dags/subdags/subdag.py took 0.072 seconds
