@@ -99,7 +99,7 @@ def task_transform_api():
 def task_merge_final():
     """Fusiona los datos transformados desde PostgreSQL y la API externa y los divide en conjuntos procesables."""
     try:
-        df_transformed_postgres = pd.read_csv(os.path.join(TRANSFORMED_DIR, "transformed_postgres_data.csv"))
+        df_transformed_postgres = pd.read_csv(os.path.join(TRANSFORMED_DIR, "hechos_accidentes.csv"))
         df_transformed_api = pd.read_csv(os.path.join(TRANSFORMED_DIR, "transformed_api_data.csv"))
 
         df_final, output_file = merge_transformed_data(df_transformed_postgres, df_transformed_api, ruta_salida=TRANSFORMED_DIR)
