@@ -124,7 +124,7 @@ def task_load():
 def task_send_to_kafka():
     """Envía los datos finales a Kafka fila por fila con retardo."""
     try:
-        final_path = os.path.join(TRANSFORMED_DIR, "merged_final_data.csv")
+        final_path = os.path.join(TRANSFORMED_DIR, "transformed_accidents_data.csv")
         df_final = pd.read_csv(final_path)
         send_dataframe_to_kafka(df_final, topic="road_accidents", sleep_seconds=3)
     except Exception as e:

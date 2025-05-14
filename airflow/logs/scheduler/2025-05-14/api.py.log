@@ -239,3 +239,101 @@
 [2025-05-14T13:40:38.732-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:40:38.719-0500] {dag.py:3239} INFO - Sync 1 DAGs
 [2025-05-14T13:40:38.828-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:40:38.828-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
 [2025-05-14T13:40:38.892-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 1.645 seconds
+[2025-05-14T13:49:48.332-0500] {processor.py:186} INFO - Started process (PID=74476) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:49:48.334-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:49:48.336-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:49:48.336-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:49:48.824-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:49:48.848-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:49:48.847-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:49:48.872-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:49:48.872-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:49:48.922-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.596 seconds
+[2025-05-14T13:50:19.264-0500] {processor.py:186} INFO - Started process (PID=74974) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:50:19.276-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:50:19.278-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:50:19.278-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:50:19.767-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:50:19.792-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:50:19.791-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:50:19.816-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:50:19.815-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:50:19.851-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.593 seconds
+[2025-05-14T13:50:50.168-0500] {processor.py:186} INFO - Started process (PID=75237) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:50:50.168-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:50:50.170-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:50:50.169-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:50:50.640-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:50:50.669-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:50:50.668-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:50:50.694-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:50:50.693-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:50:50.726-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.566 seconds
+[2025-05-14T13:51:21.750-0500] {processor.py:186} INFO - Started process (PID=75361) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:51:21.761-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:51:21.763-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:51:21.762-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:51:22.278-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:51:22.305-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:51:22.305-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:51:22.327-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:51:22.327-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:51:22.356-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.612 seconds
+[2025-05-14T13:51:52.466-0500] {processor.py:186} INFO - Started process (PID=76249) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:51:52.467-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:51:52.470-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:51:52.469-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:51:53.030-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:51:53.061-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:51:53.061-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:51:53.086-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:51:53.086-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:51:53.123-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.662 seconds
+[2025-05-14T13:52:24.277-0500] {processor.py:186} INFO - Started process (PID=76502) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:52:24.280-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:52:24.283-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:52:24.282-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:52:24.832-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:52:24.860-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:52:24.859-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:52:24.885-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:52:24.885-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:52:24.920-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.654 seconds
+[2025-05-14T13:52:55.874-0500] {processor.py:186} INFO - Started process (PID=76633) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:52:55.875-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:52:55.877-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:52:55.876-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:52:56.348-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:52:56.376-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:52:56.375-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:52:56.401-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:52:56.401-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:52:56.425-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.557 seconds
+[2025-05-14T13:53:26.555-0500] {processor.py:186} INFO - Started process (PID=76758) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:53:26.565-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:53:26.567-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:53:26.566-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:53:27.020-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:53:27.046-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:53:27.046-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:53:27.067-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:53:27.067-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:53:27.099-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.551 seconds
+[2025-05-14T13:53:57.937-0500] {processor.py:186} INFO - Started process (PID=76841) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:53:57.939-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:53:57.941-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:53:57.940-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:53:58.565-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:53:58.604-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:53:58.603-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:53:58.660-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:53:58.660-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:53:58.705-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.777 seconds
+[2025-05-14T13:54:28.933-0500] {processor.py:186} INFO - Started process (PID=77090) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:54:28.945-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:54:28.946-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:54:28.946-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:54:29.511-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:54:29.538-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:54:29.537-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:54:29.562-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:54:29.562-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:54:29.598-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.675 seconds
+[2025-05-14T13:55:00.138-0500] {processor.py:186} INFO - Started process (PID=77180) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:55:00.140-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:55:00.145-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:55:00.144-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:55:00.864-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:55:00.892-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:55:00.891-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:55:00.918-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:55:00.918-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:55:00.966-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.843 seconds
+[2025-05-14T13:55:31.180-0500] {processor.py:186} INFO - Started process (PID=77352) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:55:31.185-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:55:31.191-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:55:31.189-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:55:32.036-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:55:32.078-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:55:32.077-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:55:32.106-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:55:32.105-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:55:32.149-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.987 seconds
+[2025-05-14T13:56:02.919-0500] {processor.py:186} INFO - Started process (PID=77485) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:56:02.921-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:56:02.923-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:56:02.922-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:56:03.523-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:56:03.553-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:56:03.552-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:56:03.576-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:56:03.575-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:56:03.856-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.946 seconds
+[2025-05-14T13:56:34.610-0500] {processor.py:186} INFO - Started process (PID=77728) to work on /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:56:34.622-0500] {processor.py:914} INFO - Processing file /home/jdd/ETL-Global-Road-Accidents/dags/api.py for tasks to queue
+[2025-05-14T13:56:34.624-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:56:34.623-0500] {dagbag.py:588} INFO - Filling up the DagBag from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:56:35.287-0500] {processor.py:925} INFO - DAG(s) 'etl' retrieved from /home/jdd/ETL-Global-Road-Accidents/dags/api.py
+[2025-05-14T13:56:35.334-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:56:35.333-0500] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-05-14T13:56:35.401-0500] {logging_mixin.py:190} INFO - [2025-05-14T13:56:35.401-0500] {dag.py:4180} INFO - Setting next_dagrun for etl to 2025-05-14 00:00:00+00:00, run_after=2025-05-15 00:00:00+00:00
+[2025-05-14T13:56:35.459-0500] {processor.py:208} INFO - Processing /home/jdd/ETL-Global-Road-Accidents/dags/api.py took 0.860 seconds
