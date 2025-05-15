@@ -12,7 +12,60 @@ logging.basicConfig(level=logging.INFO,
 # Ruta donde están los CSVs transformados
 ruta_salida = os.path.join(tempfile.gettempdir(), "data")
 
+def split_transformed_data(df: pd.DataFrame, ruta_salida: str = ruta_salida):
+    """
+    Divide el DataFrame en tablas dimensionales y de hechos, guarda los CSVs
+    y realiza la inserción en la base de datos dimensional.
+    """
+    try:
+        os.makedirs(ruta_salida, exist_ok=True)
+        logging.info(f"📂 Directorio de salida creado: {ruta_salida}")
 
+        # Generar IDs únicos
+        df["id_lugar"] = df.groupby(["country", "urban_rural", "road_type", "road_condition"]).ngroup() + 1
+        df["id_fecha"] = df.groupby(["year", "month", "day_of_week", "time_of_day"]).ngroup() + 1
+        df["id_condiciones"] = df.groupby(["weather_conditions", "visibility_level"]).ngroup() + 1
+        df["id_conductor"] = df.groupby(["driver_age_group", "driver_alcohol_level", "driver_fatigue", "driver_gender"]).ngroup() + 1
+        df["id_incidente"] = df.groupby(["accident_severity", "accident_cause"]).ngroup() + 1
+        df["id_vehiculo"] = df.groupby(["vehicle_condition"]).ngroup() + 1
+
+        # Tablas dimensionales
+        df[["id_lugar", "country", "urban_rural", "road_type", "road_condition"]].drop_duplicates() \
+            .to_csv(os.path.join(ruta_salida, "dim_lugar.csv"), index=False)
+
+        df[["id_fecha", "year", "month", "day_of_week", "time_of_day"]].drop_duplicates() \
+            .to_csv(os.path.join(ruta_salida, "dim_fecha.csv"), index=False)
+
+        df[["id_condiciones", "weather_conditions", "visibility_level"]].drop_duplicates() \
+            .to_csv(os.path.join(ruta_salida, "dim_condiciones.csv"), index=False)
+
+        df[["id_conductor", "driver_age_group", "driver_alcohol_level", "driver_fatigue", "driver_gender"]].drop_duplicates() \
+            .to_csv(os.path.join(ruta_salida, "dim_conductor.csv"), index=False)
+
+        df[["id_incidente", "accident_severity", "accident_cause"]].drop_duplicates() \
+            .to_csv(os.path.join(ruta_salida, "dim_incidente.csv"), index=False)
+
+        df[["id_vehiculo", "vehicle_condition"]].drop_duplicates() \
+            .to_csv(os.path.join(ruta_salida, "dim_vehiculo.csv"), index=False)
+
+        # Tabla de hechos
+        hechos = df[[
+            "number_of_vehicles_involved", "speed_limit", "number_of_injuries", "number_of_fatalities",
+            "emergency_response_time", "traffic_volume", "pedestrians_involved", "cyclists_involved", "population_density",
+            "id_lugar", "id_fecha", "id_condiciones", "id_conductor", "id_incidente", "id_vehiculo"
+        ]].copy()
+        hechos["id"] = hechos.index + 1
+        hechos.to_csv(os.path.join(ruta_salida, "hechos_accidentes.csv"), index=False)
+
+        logging.info("✅ Archivos CSV de dimensiones y hechos creados correctamente.")
+
+        # Insertar en la base de datos
+        insert_csv_into_table(ruta_csvs=ruta_salida)
+
+    except Exception as e:
+        logging.error(f"❌ Error al procesar los datos dimensionales: {e}")
+        raise
+    
 def create_dimensional_schema():
     """
     Crea el esquema dimensional en la base de datos PostgreSQL.

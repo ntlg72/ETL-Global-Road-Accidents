@@ -70,7 +70,7 @@ def unir_dataframes(df_transformed: pd.DataFrame, df_transformed_api: pd.DataFra
 def guardar_csv(df_final: pd.DataFrame, ruta_salida: str) -> str:
     """Guarda el DataFrame final en un archivo CSV y retorna la ruta del archivo."""
     try:
-        output_file = os.path.join(ruta_salida, "transformed_accidents_data.csv")
+        output_file = os.path.join(ruta_salida, "merge_accidents_data.csv")
         df_final.to_csv(output_file, index=False)
 
         logging.info(f"✅ Archivo guardado en: {output_file}")

@@ -140,6 +140,9 @@ def add_country_column(df):
     df['country'] = 'USA'
     return df
 
+def drop_auxiliary_columns(df):
+    return df.drop(columns=['hour', 'minute', 'arr_hour', 'arr_min', 'arr_time'])
+
 def rename_columns(df):
     column_rename_map = {
         've_total': 'number_of_vehicles_involved',
@@ -160,10 +163,12 @@ def rename_columns(df):
         'time': 'time_of_day'
     }
     df.rename(columns=column_rename_map, inplace=True)
+    columnas_finales = list(column_rename_map.values())
+    if 'country' in df.columns:
+        columnas_finales.append('country')
+    df = df[columnas_finales]
     return df
 
-def drop_auxiliary_columns(df):
-    return df.drop(columns=['hour', 'minute', 'arr_hour', 'arr_min', 'arr_time'])
 
 def transform_data(df):
     """
@@ -183,8 +188,9 @@ def transform_data(df):
         df = bucket_driver_age(df)
         df = categorize_time(df)
         df = add_country_column(df)
-        df = rename_columns(df)
         df = drop_auxiliary_columns(df)
+        df = rename_columns(df)
+        
         return df
     except Exception as e:
         raise Exception(f"Error durante la transformación de datos: {e}")

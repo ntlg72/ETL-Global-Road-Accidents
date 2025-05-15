@@ -18,8 +18,8 @@ from kafka_utils.producer import send_dataframe_to_kafka
 
 # Importar funciones de PostgreSQL y transformación
 from source.extract.extract import extract_data
-from source.transform.transform import transform_accidents_data, split_transformed_data
-from source.load.load import create_dimensional_schema, insert_csv_into_table
+from source.transform.transform import transform_accidents_data
+from source.load.load import create_dimensional_schema, insert_csv_into_table, split_transformed_data
 
 # Importar funciones de API
 from source.extract.extract_api import download_accident_data, download_person_data
@@ -82,8 +82,10 @@ def task_transform_postgres():
     """Transforma datos de accidentes desde PostgreSQL."""
     df = pd.read_csv(EXTRACTED_PATH)
     df_transformed = transform_accidents_data(df)
-    split_transformed_data(df_transformed, ruta_salida=TRANSFORMED_DIR)
-    logging.info(f"✅ Transformación completada. Archivos guardados en: {TRANSFORMED_DIR}")
+    output_path = os.path.join(TRANSFORMED_DIR, "transformed_postgres_data.csv")
+    df_transformed.to_csv(output_path, index=False)
+    logging.info(f"✅ Transformación desde PostgreSQL completada: {output_path}") 
+  
 
 # **Tarea: Transformación de datos de la API**
 def task_transform_api():
@@ -99,16 +101,15 @@ def task_transform_api():
 def task_merge_final():
     """Fusiona los datos transformados desde PostgreSQL y la API externa y los divide en conjuntos procesables."""
     try:
-        df_transformed_postgres = pd.read_csv(os.path.join(TRANSFORMED_DIR, "hechos_accidentes.csv"))
+        df_transformed_postgres = pd.read_csv(os.path.join(TRANSFORMED_DIR, "transformed_postgres_data.csv"))
         df_transformed_api = pd.read_csv(os.path.join(TRANSFORMED_DIR, "transformed_api_data.csv"))
 
         df_final, output_file = merge_transformed_data(df_transformed_postgres, df_transformed_api, ruta_salida=TRANSFORMED_DIR)
 
         if df_final is not None:
-            split_transformed_data(df_final, ruta_salida=TRANSFORMED_DIR)  # División final de datos
-            logging.info(f"✅ Merge final completado y datos divididos correctamente. Archivo guardado en: {output_file}")
+            logging.info(f"✅ Merge final completado. Archivo combinado guardado en: {output_file}")
         else:
-            logging.error("❌ Error en la tarea de merge final.")
+            logging.error("❌ Error: `df_final` es None después del merge.")
 
     except Exception as e:
         logging.error(f"❌ Error en `task_merge_final()`: {e}")
@@ -116,15 +117,23 @@ def task_merge_final():
 # **Tarea: Carga a la base de datos**
 def task_load():
     """Carga los datos transformados en PostgreSQL."""
-    create_dimensional_schema()
-    insert_csv_into_table()
-    logging.info("✅ Carga completada en la base de datos.")
+    try:
+        create_dimensional_schema()
+        df_final = pd.read_csv(os.path.join(TRANSFORMED_DIR, "merge_accidents_data.csv"))
+        split_transformed_data(df_final, ruta_salida=TRANSFORMED_DIR)
+        insert_csv_into_table(ruta_csvs=TRANSFORMED_DIR)
+        logging.info("✅ Carga completada en la base de datos.")
+
+    except Exception as e:
+        logging.error(f"❌ Error en `task_load()`: {e}")
+
+
 
 # Nueva tarea para enviar mensajes a Kafka
 def task_send_to_kafka():
     """Envía los datos finales a Kafka fila por fila con retardo."""
     try:
-        final_path = os.path.join(TRANSFORMED_DIR, "transformed_accidents_data.csv")
+        final_path = os.path.join(TRANSFORMED_DIR, "merge_accidents_data.csv")
         df_final = pd.read_csv(final_path)
         send_dataframe_to_kafka(df_final, topic="road_accidents", sleep_seconds=3)
     except Exception as e:
