@@ -46,4 +46,4 @@ tzdata==2025.2
 wcwidth==0.2.13
 pyarrow==20.0.0
 kafka-python==2.2.7
-great_expectations==1.4.3
+great_expectations==1.4.4
