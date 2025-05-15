@@ -65,7 +65,7 @@ def split_transformed_data(df: pd.DataFrame, ruta_salida: str = ruta_salida):
     except Exception as e:
         logging.error(f"❌ Error al procesar los datos dimensionales: {e}")
         raise
-    
+
 def create_dimensional_schema():
     """
     Crea el esquema dimensional en la base de datos PostgreSQL.
@@ -101,7 +101,7 @@ def create_dimensional_schema():
                     id_conductor SERIAL PRIMARY KEY,
                     driver_age_group TEXT,
                     driver_alcohol_level TEXT,
-                    driver_fatigue BOOLEAN,
+                    driver_fatigue INTEGER,
                     driver_gender TEXT
                 );
                 
