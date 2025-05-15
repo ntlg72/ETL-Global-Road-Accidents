@@ -141,7 +141,7 @@ def add_country_column(df):
     return df
 
 def drop_auxiliary_columns(df):
-    return df.drop(columns=['hour', 'minute', 'arr_hour', 'arr_min', 'arr_time'])
+    return df.drop(columns=['hour', 'minute', 'arr_hour', 'arr_min', 'arr_time', 'month'])
 
 def rename_columns(df):
     column_rename_map = {

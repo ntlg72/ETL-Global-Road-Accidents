@@ -1,11 +1,16 @@
+import os
 import json
 from json import dumps
 import pandas as pd
 import time
 import logging
 from kafka import KafkaProducer
+from pathlib import Path
+import tempfile
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+TRANSFORMED_DIR = os.path.join(tempfile.gettempdir(), 'data')
+
 
 def kafka_producer():
     return KafkaProducer(
@@ -14,50 +19,8 @@ def kafka_producer():
     )
 
 
-import pandas as pd
-import logging
-from pathlib import Path
 
-TRANSFORMED_DIR = Path("/ruta/a/tu/TRANSFORMED_DIR")  # Ajusta esta ruta
 
-def generar_tablas_dimensiones() -> dict:
-    """
-    Lee el archivo transformado y genera las tablas dimensionales como DataFrames.
-    Agrega columnas de ID. Retorna un dict con cada tabla dimensional.
-    """
-    try:
-        csv_path = TRANSFORMED_DIR / "merge_accidents_data.csv"
-        logging.info(f"📂 Leyendo archivo: {csv_path}")
-        df = pd.read_csv(csv_path)
-
-        logging.info("📌 Generando tablas de dimensiones...")
-
-        dims = {}
-
-        dims["dim_lugar"] = df[["country", "urban_rural", "road_type", "road_condition"]].drop_duplicates().reset_index(drop=True)
-        dims["dim_lugar"]["id_lugar"] = dims["dim_lugar"].index + 1
-
-        dims["dim_fecha"] = df[["year", "month", "day_of_week", "time_of_day"]].drop_duplicates().reset_index(drop=True)
-        dims["dim_fecha"]["id_fecha"] = dims["dim_fecha"].index + 1
-
-        dims["dim_condiciones"] = df[["weather_conditions", "visibility_level"]].drop_duplicates().reset_index(drop=True)
-        dims["dim_condiciones"]["id_condiciones"] = dims["dim_condiciones"].index + 1
-
-        dims["dim_conductor"] = df[["driver_age_group", "driver_alcohol_level", "driver_fatigue", "driver_gender"]].drop_duplicates().reset_index(drop=True)
-        dims["dim_conductor"]["id_conductor"] = dims["dim_conductor"].index + 1
-
-        dims["dim_incidente"] = df[["accident_severity", "accident_cause"]].drop_duplicates().reset_index(drop=True)
-        dims["dim_incidente"]["id_incidente"] = dims["dim_incidente"].index + 1
-
-        dims["dim_vehiculo"] = df[["vehicle_condition"]].drop_duplicates().reset_index(drop=True)
-        dims["dim_vehiculo"]["id_vehiculo"] = dims["dim_vehiculo"].index + 1
-
-        logging.info("✅ Tablas de dimensiones generadas correctamente.")
-        return dims
-
-    except Exception as e:
-        logging.error(f"❌ Error al generar tablas de dimensiones: {e}")
-        raise
 
 
 def transformar_fila_dimensional(fila: pd.Series, dimensiones: dict) -> dict:

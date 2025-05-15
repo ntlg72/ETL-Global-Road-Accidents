@@ -96,6 +96,7 @@ def task_transform_api():
     output_path = os.path.join(TRANSFORMED_DIR, "transformed_api_data.csv")
     df_transformed.to_csv(output_path, index=False)
     logging.info(f"✅ Transformación de datos API completada: {output_path}")
+    
 
 # **Tarea: Merge final**
 def task_merge_final():
