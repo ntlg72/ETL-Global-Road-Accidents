@@ -37,7 +37,7 @@ default_args = {
 dag = DAG(
     dag_id='etl_accidents_pipeline',
     default_args=default_args,
-    schedule_interval='@daily',
+    schedule="0 0 * * *",
     catchup=False,
     description='ETL de accidentes de tráfico',
 )

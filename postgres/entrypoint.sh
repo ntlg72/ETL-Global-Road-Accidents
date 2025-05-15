@@ -1,8 +1,20 @@
 #!/bin/bash
 set -e
 
-# Expandir variables del template en un archivo final
-envsubst < /init.sql.template > /docker-entrypoint-initdb.d/init.sql
+# Ruta CORRECTA para los scripts de inicialización
+INIT_DIR="/docker-entrypoint-initdb.d"
 
-# Ejecutar la entrada predeterminada de PostgreSQL
-exec docker-entrypoint.sh "$@"
+# Crear directorio si no existe
+mkdir -p "$INIT_DIR"
+
+# Procesar template con TODAS las variables de entorno
+echo "Procesando init.sql.template..."
+envsubst < "/usr/local/bin/init.sql.template" > "$INIT_DIR/init.sql"
+
+# Debug: Mostrar archivo generado
+echo "=== Contenido de init.sql ==="
+cat "$INIT_DIR/init.sql"
+echo "============================"
+
+# Ejecutar entrypoint original
+exec /usr/local/bin/docker-entrypoint.sh "$@"
