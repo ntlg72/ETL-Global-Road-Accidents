@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO,
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from kafka_utils.producer import send_dataframe_to_kafka
+from kafka_utils.producer import *
 
 # Importar funciones de PostgreSQL y transformación
 from source.extract.extract import extract_data
@@ -128,16 +128,26 @@ def task_load():
         logging.error(f"❌ Error en `task_load()`: {e}")
 
 
-
-# Nueva tarea para enviar mensajes a Kafka
-def task_send_to_kafka():
-    """Envía los datos finales a Kafka fila por fila con retardo."""
+def task_send_dimensional_to_kafka():
+    """
+    Lee el dataset transformado, genera las tablas dimensionales e
+    inicia el envío de hechos dimensionales a Kafka.
+    """
     try:
-        final_path = os.path.join(TRANSFORMED_DIR, "merge_accidents_data.csv")
-        df_final = pd.read_csv(final_path)
-        send_dataframe_to_kafka(df_final, topic="road_accidents", sleep_seconds=3)
+        merge_path = os.path.join(TRANSFORMED_DIR, "merge_accidents_data.csv")
+        logging.info(f"📂 Cargando dataset original desde: {merge_path}")
+        df = pd.read_csv(merge_path)
+
+        logging.info("🧱 Generando dimensiones...")
+        dimensiones = generar_tablas_dimensiones()  # Esta función también usa merge_accidents_data.csv internamente
+
+        logging.info("📤 Enviando hechos dimensionales a Kafka...")
+        send_dimensional_stream_to_kafka(df, dimensiones, topic="road_accidents", sleep_seconds=0.5)
+
     except Exception as e:
-        logging.error(f"❌ Error al enviar datos a Kafka: {e}")
+        logging.error(f"❌ Error en task_send_dimensional_to_kafka: {e}")
+        raise
+
 
 # **Definición de tareas en Airflow**
 extract_api_task = PythonOperator(
@@ -182,14 +192,14 @@ load_task = PythonOperator(
     dag=dag,
 )
 
-send_kafka_task = PythonOperator(
-    task_id='send_data_to_kafka',
-    python_callable=task_send_to_kafka,
+kafka_task = PythonOperator(
+    task_id='kafka_stream',
+    python_callable=task_send_dimensional_to_kafka,
     dag=dag,
 )
 
-# Flujo de ejecución en el DAG
-extract_api_task >> process_data_task >> transform_api_task  
-extract_postgres_task >> transform_postgres_task  
+# Flujo actualizado
+extract_api_task >> process_data_task >> transform_api_task
+extract_postgres_task >> transform_postgres_task
 
-[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task >> send_kafka_task
+[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task >> kafka_task
