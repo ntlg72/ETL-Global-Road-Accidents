@@ -60,8 +60,7 @@ def validar_no_negativos(batch, timestamp, results_dir):
 
 def validar_valores_negativos_uno(batch, timestamp, results_dir):
     columns_allowing_negative_one = [
-        "road_condition", "accident_severity", "driver_fatigue",
-        "speed_limit", "number_of_injuries", "cyclists_involved", "population_density",  "traffic_volume"
+        "driver_fatigue", "speed_limit", "number_of_injuries", "cyclists_involved", "population_density",  "traffic_volume"
     ]
     for col in columns_allowing_negative_one:
         expectation = gx.expectations.ExpectColumnValuesToBeBetween(column=col, min_value=-1)
@@ -93,8 +92,7 @@ def validar_columnas_esperadas(batch, timestamp, results_dir):
     expected_columns = [
         "number_of_vehicles_involved", "speed_limit", "number_of_injuries", "number_of_fatalities",
         "emergency_response_time", "traffic_volume", "pedestrians_involved", "cyclists_involved",
-        "population_density", "fecha_id", "lugar_id", "condiciones_id", "conductor_id",
-        "vehiculo_id", "incidente_id",
+        "population_density",
         "year", "month", "day_of_week", "time_of_day",
         "country", "urban_rural", "road_type", "road_condition",
         "weather_conditions", "visibility_level",
