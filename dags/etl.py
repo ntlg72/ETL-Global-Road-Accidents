@@ -14,12 +14,12 @@ logging.basicConfig(level=logging.INFO,
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from kafka_utils.producer import send_dataframe_to_kafka
+from kafka_utils.producer import *
 
 # Importar funciones de PostgreSQL y transformación
 from source.extract.extract import extract_data
 from source.transform.transform import transform_accidents_data
-from source.load.load import create_dimensional_schema, insert_csv_into_table, split_transformed_data
+from source.load.load import *
 
 # Importar funciones de API
 from source.extract.extract_api import download_accident_data, download_person_data
@@ -37,7 +37,7 @@ default_args = {
 dag = DAG(
     dag_id='etl_accidents_pipeline',
     default_args=default_args,
-    schedule_interval='@daily',
+    schedule="0 0 * * *",
     catchup=False,
     description='ETL de accidentes de tráfico',
 )
@@ -96,6 +96,7 @@ def task_transform_api():
     output_path = os.path.join(TRANSFORMED_DIR, "transformed_api_data.csv")
     df_transformed.to_csv(output_path, index=False)
     logging.info(f"✅ Transformación de datos API completada: {output_path}")
+    
 
 # **Tarea: Merge final**
 def task_merge_final():
@@ -117,29 +118,94 @@ def task_merge_final():
 # **Tarea: Carga a la base de datos**
 def task_load():
     """Carga los datos transformados en PostgreSQL."""
+
     try:
-        create_dimensional_schema()
-        df_final = pd.read_csv(os.path.join(TRANSFORMED_DIR, "merge_accidents_data.csv"))
-        split_transformed_data(df_final, ruta_salida=TRANSFORMED_DIR)
-        insert_csv_into_table(ruta_csvs=TRANSFORMED_DIR)
-        logging.info("✅ Carga completada en la base de datos.")
+            create_dimensional_schema()
+            df_final = pd.read_csv(os.path.join(TRANSFORMED_DIR, "merge_accidents_data.csv"))
+            procesar_y_guardar_modelo_dimensional(df_final,TRANSFORMED_DIR)
+            insert_csv_into_table(ruta_csvs=TRANSFORMED_DIR)
+            logging.info("✅ Carga completada en la base de datos.")
 
     except Exception as e:
-        logging.error(f"❌ Error en `task_load()`: {e}")
+            logging.error(f"❌ Error en `task_load()`: {e}"
+                          )
 
+def send_hecho_dimensiones_to_kafka(df, kafka_topic, kafka_producer, sleep_seconds=0):
+    """
+    Transmite un hecho y sus dimensiones a Kafka, línea por línea.
 
-
-# Nueva tarea para enviar mensajes a Kafka
-def task_send_to_kafka():
-    """Envía los datos finales a Kafka fila por fila con retardo."""
+    Args:
+        df (pd.DataFrame): DataFrame que contiene los datos de hechos y dimensiones.
+        kafka_topic (str): Nombre del topic de Kafka al que se enviarán los datos.
+        kafka_producer (KafkaProducer): Instancia del productor de Kafka.
+        sleep_seconds (int, optional): Número de segundos para esperar entre el envío de cada mensaje.
+            Útil para simular un streaming en tiempo real. Por defecto es 0 (envío lo más rápido posible).
+    """
     try:
-        final_path = os.path.join(TRANSFORMED_DIR, "merge_accidents_data.csv")
-        df_final = pd.read_csv(final_path)
-        send_dataframe_to_kafka(df_final, topic="road_accidents", sleep_seconds=3)
-    except Exception as e:
-        logging.error(f"❌ Error al enviar datos a Kafka: {e}")
+        # 1. Definir las columnas de dimensiones y hechos
+        dimension_columns = ["id_lugar", "id_fecha", "id_condiciones", "id_conductor", "id_incidente", "id_vehiculo"]
+        hecho_columns = ["number_of_vehicles_involved", "speed_limit", "number_of_injuries",
+                         "number_of_fatalities", "emergency_response_time", "traffic_volume",
+                         "pedestrians_involved", "cyclists_involved", "population_density"]
 
-# **Definición de tareas en Airflow**
+        # 2. Iterar sobre cada fila del DataFrame
+        for index, row in df.iterrows():
+            # 3. Construir el mensaje para Kafka
+            mensaje = {
+                "hecho": {col: row[col] for col in hecho_columns},
+                "dimensiones": {col: row[col] for col in dimension_columns}
+            }
+            mensaje_json = json.dumps(mensaje).encode('utf-8')  # Convertir a JSON y luego a bytes
+
+            # 4. Enviar el mensaje a Kafka
+            try:
+                kafka_producer.send(kafka_topic, mensaje_json)
+                kafka_producer.flush()  # Asegurar que el mensaje se envíe inmediatamente
+                logging.info(f"✅ Mensaje enviado a Kafka (topic: {kafka_topic}): {mensaje_json}")
+            except KafkaError as e:
+                logging.error(f"❌ Error al enviar mensaje a Kafka: {e}")
+                raise  # Re-lanzar la excepción para que se capture en el nivel superior
+
+            if sleep_seconds > 0:
+                time.sleep(sleep_seconds)  # Esperar si se especifica un tiempo de espera
+
+    except Exception as e:
+        logging.error(f"❌ Error al procesar y enviar datos a Kafka: {e}")
+        raise  # Re-lanzar para que Airflow lo capture y maneje el reintento si está configurado
+
+
+
+def task_send_hechos_dimensiones_to_kafka():
+    """
+    Tarea de Airflow para enviar hechos y dimensiones a Kafka.
+    """
+    try:
+        merge_path = os.path.join(TRANSFORMED_DIR, "merge_accidents_data.csv")
+        logging.info(f"📂 Cargando dataset desde: {merge_path}")
+        df = pd.read_csv(merge_path)
+
+        # Configurar el productor de Kafka (asegúrate de que la configuración sea correcta)
+        kafka_config = {
+            'bootstrap_servers': 'localhost:9092',  # Reemplaza con tu/s servidor/es de Kafka
+            'value_serializer': lambda x: x.encode('utf-8')  # Codifica los valores a bytes
+        }
+        kafka_producer = KafkaProducer(**kafka_config)
+
+        # Enviar los datos a Kafka
+        send_hecho_dimensiones_to_kafka(df,
+                                       kafka_topic="road_accidents",  # Reemplaza con el nombre de tu topic
+                                       kafka_producer=kafka_producer,
+                                       sleep_seconds=0.5)  # Ajusta según sea necesario
+
+        # Cerrar el productor de Kafka
+        kafka_producer.close()
+        logging.info("✅ Transmisión de datos a Kafka completada.")
+
+    except Exception as e:
+        logging.error(f"❌ Error en la tarea task_send_hechos_dimensiones_to_kafka: {e}")
+        raise
+
+# Definición de tareas en Airflow
 extract_api_task = PythonOperator(
     task_id='extract_data_api',
     python_callable=task_extract_api,
@@ -182,14 +248,14 @@ load_task = PythonOperator(
     dag=dag,
 )
 
-send_kafka_task = PythonOperator(
-    task_id='send_data_to_kafka',
-    python_callable=task_send_to_kafka,
+kafka_task = PythonOperator(
+    task_id='kafka_stream',
+    python_callable=task_send_hechos_dimensiones_to_kafka,
     dag=dag,
 )
 
-# Flujo de ejecución en el DAG
-extract_api_task >> process_data_task >> transform_api_task  
-extract_postgres_task >> transform_postgres_task  
+# Flujo actualizado
+extract_api_task >> process_data_task >> transform_api_task
+extract_postgres_task >> transform_postgres_task
 
-[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task >> send_kafka_task
+[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task >> kafka_task
