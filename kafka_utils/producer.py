@@ -20,9 +20,6 @@ def kafka_producer():
 
 
 
-
-
-
 def transformar_fila_dimensional(fila: pd.Series, dimensiones: dict) -> dict:
     """
     Dada una fila del dataframe original, devuelve el hecho dimensional con IDs,

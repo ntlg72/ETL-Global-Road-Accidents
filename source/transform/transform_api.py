@@ -70,21 +70,21 @@ def convert_crash_time(df):
     return df
 
 def compute_diff_time(df):
-    def time_diff_str(t1, t2):
-        dt1 = datetime(2023, 1, 1, t1.hour, t1.minute)
-        dt2 = datetime(2023, 1, 1, t2.hour, t2.minute)
+    def time_diff_to_minutes(t1, t2):
+        if pd.isna(t1) or pd.isna(t2):  # Manejar valores nulos
+            return None
+        dt1 = datetime(2023, 1, 1, t1.hour, t1.minute, t1.second if hasattr(t1, 'second') else 0)
+        dt2 = datetime(2023, 1, 1, t2.hour, t2.minute, t2.second if hasattr(t2, 'second') else 0)
         if dt2 < dt1:
-            dt2 = datetime(2023, 1, 2, t2.hour, t2.minute)
+            dt2 = datetime(2023, 1, 2, t2.hour, t2.minute, t2.second if hasattr(t2, 'second') else 0)
         diff = dt2 - dt1
-        hours, remainder = divmod(diff.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
-    
-    df['diff_time'] = df.apply(
-        lambda row: time_diff_str(row['time'], row['arr_time'])
-        if pd.notnull(row['time']) and pd.notnull(row['arr_time']) else None,
+        return diff.total_seconds() / 60  # Convertir a minutos
+
+    df['emergency_response_time'] = df.apply(
+        lambda row: time_diff_to_minutes(row['time'], row['arr_time']),
         axis=1
     )
+    df = df.drop(columns=['diff_time'], errors='ignore') # Eliminar la columna temporal
     return df
 
 def classify_alcohol_level(df):
