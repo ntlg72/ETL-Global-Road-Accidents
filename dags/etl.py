@@ -140,77 +140,15 @@ def task_load():
             logging.error(f"❌ Error en `task_load()`: {e}"
                           )
 
-def send_hecho_dimensiones_to_kafka(df, kafka_topic, kafka_producer, sleep_seconds=0):
-    """
-    Transmite un hecho y sus dimensiones a Kafka, línea por línea.
-
-    Args:
-        df (pd.DataFrame): DataFrame que contiene los datos de hechos y dimensiones.
-        kafka_topic (str): Nombre del topic de Kafka al que se enviarán los datos.
-        kafka_producer (KafkaProducer): Instancia del productor de Kafka.
-        sleep_seconds (int, optional): Número de segundos para esperar entre el envío de cada mensaje.
-            Útil para simular un streaming en tiempo real. Por defecto es 0 (envío lo más rápido posible).
-    """
-    try:
-        # 1. Definir las columnas de dimensiones y hechos
-        dimension_columns = ["id_lugar", "id_fecha", "id_condiciones", "id_conductor", "id_incidente", "id_vehiculo"]
-        hecho_columns = ["number_of_vehicles_involved", "speed_limit", "number_of_injuries",
-                         "number_of_fatalities", "emergency_response_time", "traffic_volume",
-                         "pedestrians_involved", "cyclists_involved", "population_density"]
-
-        # 2. Iterar sobre cada fila del DataFrame
-        for index, row in df.iterrows():
-            # 3. Construir el mensaje para Kafka
-            mensaje = {
-                "hecho": {col: row[col] for col in hecho_columns},
-                "dimensiones": {col: row[col] for col in dimension_columns}
-            }
-            mensaje_json = json.dumps(mensaje).encode('utf-8')  # Convertir a JSON y luego a bytes
-
-            # 4. Enviar el mensaje a Kafka
-            try:
-                kafka_producer.send(kafka_topic, mensaje_json)
-                kafka_producer.flush()  # Asegurar que el mensaje se envíe inmediatamente
-                logging.info(f"✅ Mensaje enviado a Kafka (topic: {kafka_topic}): {mensaje_json}")
-            except KafkaError as e:
-                logging.error(f"❌ Error al enviar mensaje a Kafka: {e}")
-                raise  # Re-lanzar la excepción para que se capture en el nivel superior
-
-            if sleep_seconds > 0:
-                time.sleep(sleep_seconds)  # Esperar si se especifica un tiempo de espera
-
-    except Exception as e:
-        logging.error(f"❌ Error al procesar y enviar datos a Kafka: {e}")
-        raise  # Re-lanzar para que Airflow lo capture y maneje el reintento si está configurado
-
-
-
 def task_send_hechos_dimensiones_to_kafka():
-    """
-    Tarea de Airflow para enviar hechos y dimensiones a Kafka.
-    """
     try:
-        merge_path = os.path.join(TRANSFORMED_DIR, "merge_accidents_data.csv")
-        logging.info(f"📂 Cargando dataset desde: {merge_path}")
-        df = pd.read_csv(merge_path)
+        hechos_path = os.path.join(TRANSFORMED_DIR, "hechos_accidentes.csv")
+        logging.info(f"📂 Cargando dataset desde: {hechos_path}")
+        df = pd.read_csv(hechos_path, dtype=str)
 
-        # Configurar el productor de Kafka (asegúrate de que la configuración sea correcta)
-        kafka_config = {
-            'bootstrap_servers': 'localhost:9092',  # Reemplaza con tu/s servidor/es de Kafka
-            'value_serializer': lambda x: x.encode('utf-8')  # Codifica los valores a bytes
-        }
-        kafka_producer = KafkaProducer(**kafka_config)
+        send_hechos_to_kafka(df, topic="road_accidents", sleep_seconds=0.5)
 
-        # Enviar los datos a Kafka
-        send_hecho_dimensiones_to_kafka(df,
-                                       kafka_topic="road_accidents",  # Reemplaza con el nombre de tu topic
-                                       kafka_producer=kafka_producer,
-                                       sleep_seconds=0.5)  # Ajusta según sea necesario
-
-        # Cerrar el productor de Kafka
-        kafka_producer.close()
         logging.info("✅ Transmisión de datos a Kafka completada.")
-
     except Exception as e:
         logging.error(f"❌ Error en la tarea task_send_hechos_dimensiones_to_kafka: {e}")
         raise
