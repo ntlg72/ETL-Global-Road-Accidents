@@ -3,3 +3,4 @@ venv/
 __pycache__/
 airflow/
 postgres/docker-entrypoint-initdb.d/init.sql
+postgres/docker-entrypoint-initdb.d/init.sql
