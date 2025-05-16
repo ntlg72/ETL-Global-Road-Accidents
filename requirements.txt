@@ -226,3 +226,7 @@ widgetsnbextension==4.0.14
 wirerope==1.0.0
 wrapt==1.17.2
 zipp==3.21.0
+pyarrow==20.0.0
+kafka-python==2.2.7
+great_expectations==1.4.4
+

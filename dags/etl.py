@@ -27,6 +27,8 @@ from source.extract.extract_api import load_accident_data, load_person_data, mer
 from source.transform.transform_api import transform_data
 from source.merge.merge import merge_transformed_data # Nueva función de merge
 
+from source.gx.gx import ejecutar_validaciones
+
 # Configuración del DAG
 default_args = {
     'owner': 'airflow',
@@ -46,6 +48,9 @@ dag = DAG(
 EXTRACTED_PATH = os.path.join(tempfile.gettempdir(), 'extracted_accidents.csv')
 TRANSFORMED_DIR = os.path.join(tempfile.gettempdir(), 'data')
 os.makedirs(TRANSFORMED_DIR, exist_ok=True)
+
+GX_CSV_PATH = os.path.join(tempfile.gettempdir(), 'data', "merge_accidents_data.csv")
+GX_RESULTS_DIR = os.path.join(tempfile.gettempdir(), 'gx_results')
 
 # **Tarea: Extracción de datos desde la API FARS**
 def task_extract_api():
@@ -114,6 +119,11 @@ def task_merge_final():
 
     except Exception as e:
         logging.error(f"❌ Error en `task_merge_final()`: {e}")
+
+def task_gx_validation():
+    logging.info("▶️ Ejecutando validaciones con Great Expectations...")
+    ejecutar_validaciones(GX_CSV_PATH, GX_RESULTS_DIR)
+    logging.info("✅ Validaciones Great Expectations completadas.")
 
 # **Tarea: Carga a la base de datos**
 def task_load():
@@ -242,6 +252,12 @@ merge_final_task = PythonOperator(
     dag=dag,
 )
 
+gx_validation_task = PythonOperator(
+    task_id='validate_data_great_expectations',
+    python_callable=task_gx_validation,
+    dag=dag,
+)
+
 load_task = PythonOperator(
     task_id='load_data',
     python_callable=task_load,
@@ -258,4 +274,5 @@ kafka_task = PythonOperator(
 extract_api_task >> process_data_task >> transform_api_task
 extract_postgres_task >> transform_postgres_task
 
-[transform_postgres_task, transform_api_task] >> merge_final_task >> load_task >> kafka_task
+[transform_postgres_task, transform_api_task] >> merge_final_task >> gx_validation_task >> load_task >> kafka_task
+

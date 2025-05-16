@@ -143,6 +143,7 @@ def add_country_column(df):
 def drop_auxiliary_columns(df):
     return df.drop(columns=['hour', 'minute', 'arr_hour', 'arr_min', 'arr_time', 'month'])
 
+
 def rename_columns(df):
     column_rename_map = {
         've_total': 'number_of_vehicles_involved',
