@@ -83,6 +83,10 @@ def procesar_y_guardar_modelo_dimensional(df, ruta_salida):
     
     # Generar ID único para cada hecho
     hechos_df['id_hecho'] = [generar_id_unico(row) for _, row in hechos_df.iterrows()]
+
+    # Mover id_hecho al principio
+    columnas = ["id_hecho"] + [col for col in hechos_df.columns if col != "id_hecho"]
+    hechos_df = hechos_df.reindex(columns=columnas)
     
     # 4. Guardar todas las tablas a CSV
     # Guardar dimensiones
@@ -163,7 +167,7 @@ def create_dimensional_schema():
                 );
 
                 CREATE TABLE hechos_accidentes (
-                    id BIGSERIAL PRIMARY KEY,
+                    id_hecho BIGSERIAL PRIMARY KEY,
                     number_of_vehicles_involved INT,
                     speed_limit INT,
                     number_of_injuries INT,
@@ -265,7 +269,7 @@ def insert_csv_into_table(ruta_csvs: str = ruta_salida):
             # Cargar tabla de hechos con UPSERT por chunks
             hechos_path = os.path.join(ruta_csvs, "hechos_accidentes.csv")
             if os.path.exists(hechos_path):
-                fact_columns = [
+                fact_columns = [ 
                     'number_of_vehicles_involved', 'speed_limit', 'number_of_injuries',
                     'number_of_fatalities', 'emergency_response_time', 'traffic_volume',
                     'pedestrians_involved', 'cyclists_involved', 'population_density',

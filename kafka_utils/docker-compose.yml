@@ -1,29 +1,140 @@
-services: #Containers to run
-  zookeeper: # First container (Service)
-    image: confluentinc/cp-zookeeper:latest  #zookeeper docker image
-    container_name: zookeeper #container name
-    environment: #Envirnoment variables
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    ports: #maps port 2181 from the host to por 2181 inside the zookeeper container, allows to access zookeeper on port 2181 of your host machine
+    ports:
       - 2181:2181
+    networks:
+      - pinot-demo
 
-
-  kafka-test: # Second container (Service)
-    image: confluentinc/cp-kafka:latest # Latest version of Kafka docker image
-    container_name: kafka-test # Name of the container
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
     depends_on:
-      - zookeeper # Kafka depende de Zookeeper, así que no iniciará hasta que este esté listo
+      - zookeeper
     environment:
-      KAFKA_BROKER_ID: 1 # Identificador único del broker
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181' # Conexión con Zookeeper
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT # Protocolos de seguridad
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092 # Endpoints para conectar clientes
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_CREATE_TOPICS: "road_accidents:3:1" # Crea el topic 'road_accidents' con 3 particiones y factor de replicación 1
+      KAFKA_CREATE_TOPICS: "road_accidents:3:1"
     ports:
-      - "9092:9092" # Puerto de Kafka hacia localhost
-    expose:
-      - "9093"
+      - "9092:9092"
+    networks:
+      - pinot-demo
+
+  pinot-controller:
+    image: ${PINOT_IMAGE:-apachepinot/pinot:1.2.0}
+    command: "StartController -zkAddress zookeeper:2181"
+    container_name: pinot-controller
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    environment:
+      JAVA_OPTS: "-Dplugins.dir=/opt/pinot/plugins -Xms1G -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xloggc:gc-pinot-controller.log"
+    depends_on:
+      zookeeper:
+        condition: service_started
+    networks:
+      - pinot-demo
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  pinot-broker:
+    image: ${PINOT_IMAGE:-apachepinot/pinot:1.2.0}
+    command: "StartBroker -zkAddress zookeeper:2181"
+    container_name: pinot-broker
+    restart: unless-stopped
+    ports:
+      - "8099:8099"
+    environment:
+      JAVA_OPTS: "-Dplugins.dir=/opt/pinot/plugins -Xms4G -Xmx4G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xloggc:gc-pinot-broker.log"
+    depends_on:
+      pinot-controller:
+        condition: service_healthy
+    networks:
+      - pinot-demo
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8099/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  pinot-server:
+    image: ${PINOT_IMAGE:-apachepinot/pinot:1.2.0}
+    command: "StartServer -zkAddress zookeeper:2181"
+    container_name: pinot-server
+    restart: unless-stopped
+    ports:
+      - "8097:8097"
+      - "8098:8098"
+    environment:
+      JAVA_OPTS: "-Dplugins.dir=/opt/pinot/plugins -Xms4G -Xmx16G -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xloggc:gc-pinot-server.log"
+    depends_on:
+      pinot-broker:
+        condition: service_healthy
+    networks:
+      - pinot-demo
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8097/health/readiness || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  pinot-init:
+    image: apachepinot/pinot:1.2.0
+    container_name: pinot-table-creator
+    depends_on:
+      - pinot-controller
+    volumes:
+      - ./pinot/schemas:/schemas
+      - ./pinot/tables:/tables
+    command: >
+      AddTable
+      -schemaFile /schemas/road_accidents_schema.json
+      -tableConfigFile /tables/road_accidents_realtime_table.json
+      -controllerHost pinot-controller
+      -controllerPort 9000
+      -exec
+    networks:
+      - pinot-demo
+    restart: "no"
+
+
+  postgres:
+    image: ntlg72/custom-postgres:1.0
+    container_name: postgres_gra
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      PG_DATABASE: ${PG_DATABASE}
+      PG_DATABASE_DIMENSIONAL: ${PG_DATABASE_DIMENSIONAL}
+      PG_DATABASE_KAFKA: ${PG_DATABASE_KAFKA}
+    ports:
+      - "${PG_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pinot-demo
+
+volumes:
+  postgres_data:
+
+networks:
+  pinot-demo:
+    name: pinot-demo
+    driver: bridge

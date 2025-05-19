@@ -1,0 +1,32 @@
+{
+  "tableName": "accidents",
+  "tableType": "REALTIME",
+  "segmentsConfig": {
+    "timeColumnName": "event_timestamp",
+    "retentionTimeUnit": "DAYS",
+    "retentionTimeValue": "30",
+    "schemaName": "accidents",
+    "replication": "2"
+  },
+  "tenants": {
+    "broker": "DefaultTenant",
+    "server": "DefaultTenant"
+  },
+  "fieldConfigList": [
+    {"name": "year", "encodingType": "DICTIONARY"},
+    {"name": "month", "encodingType": "DICTIONARY"},
+    {"name": "day_of_week", "encodingType": "DICTIONARY"},
+    {"name": "accident_severity", "encodingType": "DICTIONARY"},
+    {"name": "weather_conditions", "encodingType": "DICTIONARY"}
+  ],
+  "ingestionConfig": {
+    "streamIngestionConfig": {
+      "type": "kafka",
+      "streamConfigMaps": {
+        "stream.kafka.topic.name": "accidentsTopic",
+        "stream.kafka.bootstrap.servers": "localhost:9092",
+        "stream.kafka.consumer.type": "lowlevel"
+      }
+    }
+  }
+}

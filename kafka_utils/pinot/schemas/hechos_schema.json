@@ -1,0 +1,46 @@
+{
+  "schemaName": "accidents",
+  "dimensionFieldSpecs": [
+    {"name": "id_fecha", "dataType": "LONG"},
+    {"name": "year", "dataType": "INT"},
+    {"name": "month", "dataType": "STRING"},
+    {"name": "day_of_week", "dataType": "STRING"},
+    {"name": "time_of_day", "dataType": "STRING"},
+    
+    {"name": "id_condiciones", "dataType": "LONG"},
+    {"name": "weather_conditions", "dataType": "STRING"},
+    {"name": "visibility_level", "dataType": "STRING"},
+    
+    {"name": "id_conductor", "dataType": "LONG"},
+    {"name": "driver_age_group", "dataType": "STRING"},
+    {"name": "driver_alcohol_level", "dataType": "STRING"},
+    {"name": "driver_fatigue", "dataType": "INT"},
+    {"name": "driver_gender", "dataType": "STRING"},
+    
+    {"name": "id_incidente", "dataType": "LONG"},
+    {"name": "accident_severity", "dataType": "STRING"},
+    {"name": "accident_cause", "dataType": "STRING"},
+    
+    {"name": "id_vehiculo", "dataType": "LONG"},
+    {"name": "vehicle_condition", "dataType": "STRING"}
+  ],
+  "metricFieldSpecs": [
+    {"name": "number_of_vehicles_involved", "dataType": "INT"},
+    {"name": "speed_limit", "dataType": "INT"},
+    {"name": "number_of_injuries", "dataType": "INT"},
+    {"name": "number_of_fatalities", "dataType": "INT"},
+    {"name": "emergency_response_time", "dataType": "FLOAT"},
+    {"name": "traffic_volume", "dataType": "FLOAT"},
+    {"name": "pedestrians_involved", "dataType": "INT"},
+    {"name": "cyclists_involved", "dataType": "INT"},
+    {"name": "population_density", "dataType": "FLOAT"}
+  ],
+  "dateTimeFieldSpecs": [
+    {
+      "name": "event_timestamp",
+      "dataType": "LONG",
+      "format": "1:MILLISECONDS:EPOCH",
+      "granularity": "1:MILLISECONDS"
+    }
+  ]
+}
