@@ -16,7 +16,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-messages = deque(maxlen=100)
+messages = []
 app = FastAPI()
 
 def kafka_consumer():
