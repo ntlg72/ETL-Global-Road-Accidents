@@ -1,29 +1,92 @@
-services: #Containers to run
-  zookeeper: # First container (Service)
-    image: confluentinc/cp-zookeeper:latest  #zookeeper docker image
-    container_name: zookeeper #container name
-    environment: #Envirnoment variables
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    ports: #maps port 2181 from the host to por 2181 inside the zookeeper container, allows to access zookeeper on port 2181 of your host machine
-      - 2181:2181
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+    restart: unless-stopped
+    networks:
+      - kafka-network
+    healthcheck:
+      test: ["CMD", "echo", "ruok", "|", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-
-  kafka-test: # Second container (Service)
-    image: confluentinc/cp-kafka:latest # Latest version of Kafka docker image
-    container_name: kafka-test # Name of the container
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
     depends_on:
-      - zookeeper # Kafka depende de Zookeeper, así que no iniciará hasta que este esté listo
-    environment:
-      KAFKA_BROKER_ID: 1 # Identificador único del broker
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181' # Conexión con Zookeeper
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT # Protocolos de seguridad
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092 # Endpoints para conectar clientes
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_CREATE_TOPICS: "road_accidents:3:1" # Crea el topic 'road_accidents' con 3 particiones y factor de replicación 1
+      zookeeper:
+        condition: service_healthy
     ports:
-      - "9092:9092" # Puerto de Kafka hacia localhost
-    expose:
-      - "9093"
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_NUM_PARTITIONS: 3
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    restart: unless-stopped
+    networks:
+      - kafka-network
+
+  consumer:
+    image: python:3.9
+    container_name: consumer
+    volumes:
+      - ./consumer.py:/app/consumer.py
+      - ./logs:/app/logs
+    working_dir: /app
+    command: >
+      bash -c "pip install confluent-kafka fastapi uvicorn pandas && python consumer.py"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - kafka
+    restart: unless-stopped
+    networks:
+      - kafka-network
+
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
+    networks:
+      - kafka-network
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/config.yml
+      - ./logs:/app/logs
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    restart: unless-stopped
+    networks:
+      - kafka-network
+
+networks:
+  kafka-network:
+    driver: bridge
+
+volumes:
+  zookeeper_data:
+  kafka_data:
+  
+
