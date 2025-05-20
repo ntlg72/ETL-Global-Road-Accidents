@@ -4,3 +4,4 @@ __pycache__/
 airflow/
 postgres/docker-entrypoint-initdb.d/init.sql
 postgres/docker-entrypoint-initdb.d/init.sql
+kafka_utils/logs/
