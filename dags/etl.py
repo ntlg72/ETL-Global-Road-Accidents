@@ -165,19 +165,7 @@ def task_send_hechos_dimensiones_to_kafka():
         logging.error(f"❌ Error en task_send_hechos_dimensiones_to_kafka: {e}")
         raise
 
-# Tarea: Verificar la API del consumidor
-def task_check_api():
-    try:
-        api_url = "http://localhost:8000/data?limit=1"  # Cambia a "kafka:8000" si Airflow está en Docker
-        response = requests.get(api_url, timeout=10)
-        if response.status_code == 200:
-            logging.info("✅ API del consumidor está activa y responde correctamente")
-        else:
-            logging.error(f"❌ API respondió con código {response.status_code}")
-            raise Exception(f"API no está activa: {response.status_code}")
-    except Exception as e:
-        logging.error(f"❌ Error verificando API: {e}")
-        raise
+
 
 # Definición de tareas en Airflow
 extract_api_task = PythonOperator(
@@ -234,13 +222,8 @@ kafka_task = PythonOperator(
     dag=dag,
 )
 
-check_api_task = PythonOperator(
-    task_id='check_api',
-    python_callable=task_check_api,
-    dag=dag,
-)
 
 # Flujo actualizado
 extract_api_task >> process_data_task >> transform_api_task
 extract_postgres_task >> transform_postgres_task
-[transform_postgres_task, transform_api_task] >> merge_final_task >> gx_validation_task >> load_task >> kafka_task >> check_api_task
+[transform_postgres_task, transform_api_task] >> merge_final_task >> gx_validation_task >> load_task >> kafka_task 
