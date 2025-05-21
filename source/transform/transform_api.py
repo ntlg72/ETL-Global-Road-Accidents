@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import datetime, time
 
+
 def clean_special_values(df):
     """
     Removes invalid or special values from the dataset.
@@ -119,7 +120,7 @@ def bucket_driver_age(df):
         elif 26 <= age <= 40: return '26-40'
         elif 41 <= age <= 60: return '41-60'
         else: return '61+'
-    df['age'] = df['age'].apply(map_driver_age)
+    df.loc[:, 'age'] = df['age'].apply(map_driver_age)
     return df
 
 def categorize_time(df):
