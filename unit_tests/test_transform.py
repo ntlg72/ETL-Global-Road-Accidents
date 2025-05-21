@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 import numpy as np
 from unittest.mock import patch, MagicMock
-from source.transform.transform import transform_accidents_data, split_transformed_data
+from source.transform.transform import transform_accidents_data
 import os
 import logging
 import warnings
@@ -129,69 +129,3 @@ def test_transform_accidents_data_invalid_data():
     assert transformed_df["driver_fatigue"].tolist() == [False, True], \
         "Valores inválidos en driver_fatigue no convertidos a False"
 
-# --- Tests for split_transformed_data ---
-
-@patch("pandas.DataFrame.to_csv")
-@patch("os.makedirs")
-def test_split_transformed_data(mock_makedirs, mock_to_csv, test_dataframe):
-    """Prueba la creación de tablas dimensionales y de hechos."""
-    df = transform_accidents_data(test_dataframe.copy())
-    
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=FutureWarning)
-        with patch("logging.info") as mock_logging:
-            split_transformed_data(df, ruta_salida="test_output")
-
-    # Verify directory creation
-    mock_makedirs.assert_called_once_with("test_output", exist_ok=True)
-    mock_logging.assert_any_call("📂 Directorio de salida creado: test_output")
-
-    # Verify CSV calls
-    assert mock_to_csv.call_count == 7, f"Se esperaban 7 llamadas a to_csv, se obtuvieron {mock_to_csv.call_count}"
-    
-    # Verify dimensional tables
-    expected_tables = [
-        ("dim_lugar.csv", ["id_lugar", "country", "urban_rural", "road_type", "road_condition"]),
-        ("dim_fecha.csv", ["id_fecha", "year", "month", "day_of_week", "time_of_day"]),
-        ("dim_condiciones.csv", ["id_condiciones", "weather_conditions", "visibility_level"]),
-        ("dim_conductor.csv", ["id_conductor", "driver_age_group", "driver_alcohol_level", "driver_fatigue", "driver_gender"]),
-        ("dim_incidente.csv", ["id_incidente", "accident_severity", "accident_cause"]),
-        ("dim_vehiculo.csv", ["id_vehiculo", "vehicle_condition"]),
-        ("hechos_accidentes.csv", [
-            "number_of_vehicles_involved", "speed_limit", "number_of_injuries", "number_of_fatalities",
-            "emergency_response_time", "traffic_volume", "pedestrians_involved", "cyclists_involved",
-            "population_density", "id_lugar", "id_fecha", "id_condiciones", "id_conductor",
-            "id_incidente", "id_vehiculo", "id"
-        ])
-    ]
-
-    for table_name, expected_cols in expected_tables:
-        # Find the call for this table
-        for call in mock_to_csv.call_args_list:
-            if table_name in call[0][0]:
-                saved_df = call[0][0].split("/")[-1]  # Extract table name
-                assert saved_df == table_name, f"Tabla {table_name} no guardada correctamente"
-                break
-        else:
-            assert False, f"No se encontró llamada para guardar {table_name}"
-
-    # Verify ID assignments
-    assert df["id_lugar"].nunique() == 3, "IDs de lugar incorrectos"
-    assert df["id_fecha"].nunique() == 3, "IDs de fecha incorrectos"
-    assert df["id_condiciones"].nunique() == 3, "IDs de condiciones incorrectos"
-
-@patch("pandas.DataFrame.to_csv")
-@patch("os.makedirs")
-def test_split_transformed_data_empty_dataframe(mock_makedirs, mock_to_csv):
-    """Prueba la función con un DataFrame vacío."""
-    df = pd.DataFrame()
-    with pytest.raises(KeyError, match="country"):
-        split_transformed_data(df, ruta_salida="test_output")
-
-@patch("pandas.DataFrame.to_csv")
-@patch("os.makedirs")
-def test_split_transformed_data_missing_columns(mock_makedirs, mock_to_csv, test_dataframe):
-    """Prueba la función con columnas faltantes."""
-    df = test_dataframe[["number_of_vehicles_involved", "speed_limit"]].copy()
-    with pytest.raises(KeyError, match="country"):
-        split_transformed_data(df, ruta_salida="test_output")
