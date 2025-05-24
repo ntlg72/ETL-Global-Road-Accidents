@@ -137,11 +137,11 @@ Este proyecto incluye un **dashboard interactivo en tiempo real** construido con
 
 Ejecuta el siguiente comando desde la raíz del proyecto:
 
-bash
+```bash
 
-CopiarEditar
+`python source/real_time_dash.py`
 
-`python source/real_time_dash.py` 
+```
 
 ### 🌐 Acceso al dashboard
 
