@@ -139,7 +139,7 @@ Ejecuta el siguiente comando desde la raíz del proyecto:
 
 ```bash
 
-`python source/real_time_dash.py`
+python source/real_time_dash.py
 
 ```
 
