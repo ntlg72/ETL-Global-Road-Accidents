@@ -129,6 +129,39 @@ docker logs consumer -f
 
 ---
 
+## 🚦 Dashboard en Tiempo Real
+
+Este proyecto incluye un **dashboard interactivo en tiempo real** construido con **Dash** para visualizar dinámicamente los datos de accidentes viales conforme se actualizan.
+
+### ▶️ Cómo ejecutar el dashboard
+
+Ejecuta el siguiente comando desde la raíz del proyecto:
+
+bash
+
+CopiarEditar
+
+`python source/real_time_dash.py` 
+
+### 🌐 Acceso al dashboard
+
+Abre tu navegador y visita la siguiente URL para ver el dashboard en acción:
+
+[http://localhost:8050/](http://localhost:8050/)
+
+Aquí encontrarás:
+
+-   KPIs clave actualizándose cada 2 segundos
+    
+-   Gráfica interactiva que muestra la evolución del número de vehículos involucrados en accidentes
+    
+
+### ⚠️ Consideraciones importantes
+
+-   Asegúrate de que el servicio **consumer** y la API estén activos en `http://localhost:8000`, ya que el dashboard depende de esta fuente para obtener los datos en tiempo real.
+    
+-   El dashboard se refresca automáticamente cada 2 segundos para mostrar la información más reciente.
+
 ## 🧠 Créditos
 
 Proyecto desarrollado por:
