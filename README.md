@@ -50,14 +50,24 @@ _AIRFLOW_WWW_USER_PASSWORD=admin
 ### 3. Estructura del Proyecto
 
 ```
-docker-etl-pipeline/
-├── ETL-Global-Road-Accidents/
-│   └── notebooks/
-│       └── 001_extraction.ipynb
-├── consumer.py
-├── docker-compose.yml
-├── .env
-└── logs/
+ETL-Global-Road-Accidents/
+├── dags/                  # DAGs de Airflow
+├── data/                  # Datos sin procesar y procesados
+├── kafka_utils/           # Utilidades para Kafka
+├── notebooks/             # Cuadernos de Jupyter para análisis
+├── postgres/              # Scripts de inicialización de PostgreSQL
+├── source/                # Código fuente del proyecto
+├── unit_tests/            # Pruebas unitarias
+├── .gitattributes
+├── .gitignore
+├── Dashboard.pdf          # Dashboard generado
+├── Dockerfile
+├── README.md
+├── consumer.py            # Servicio consumidor de Kafka
+├── docker-compose.yaml
+├── requirements.txt
+└── requirements_docker.txt
+
 ```
 
 ---
@@ -89,9 +99,6 @@ cd ETL-Global-Road-Accidents/notebooks
 pip install jupyter
 jupyter notebook
 ```
-
-Abre y ejecuta el cuaderno `001_extraction.ipynb`.
-
 🔎 **Verifica:**
 - Que Kafka y PostgreSQL estén funcionando  
 - Que las conexiones a las bases de datos estén activas
