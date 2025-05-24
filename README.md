@@ -1,7 +1,3 @@
-
-# ETL - Global Road Accidents
-
-Por Michel Burgos Santos, Juan David Daza Rivera y Natalia López Gallego.
 # Pipeline ETL para Análisis de Accidentes Viales Globales
 
 Este proyecto proporciona un pipeline ETL completo para procesar y analizar datos de accidentes viales globales (procedentes del dataset de Kaggle "Global Road Accidents Data" y de "Fatality Analysis Reporting System (FARS) API") etutilizando Kafka para streaming de datos, Airflow para orquestación y PostgreSQL para almacenamiento.
