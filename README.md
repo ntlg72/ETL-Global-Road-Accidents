@@ -2,172 +2,125 @@
 # ETL - Global Road Accidents
 
 Por Michel Burgos Santos, Juan David Daza Rivera y Natalia López Gallego.
+# Pipeline ETL para Análisis de Accidentes Viales Globales
 
-Este proyecto analiza el conjunto de datos **Global Road Accidents Dataset** de Kaggle. Utiliza Apache Airflow para orquestar flujos ETL, PostgreSQL como base de datos y Jupyter/Power BI para el análisis y visualización de datos.
+Este proyecto proporciona un pipeline ETL completo para procesar y analizar datos de accidentes viales globales (procedentes del dataset de Kaggle "Global Road Accidents Data" y de "Fatality Analysis Reporting System (FARS) API") etutilizando Kafka para streaming de datos, Airflow para orquestación y PostgreSQL para almacenamiento.
 
----
+## Requisitos Previos
 
-## 🚀 Pasos de instalación (WSL2)
+- Docker (versión 20.10.0 o superior)
+- Docker Compose (versión 1.29.0 o superior)
+- Git
+- Python 3.9+ (para desarrollo local)
+- Jupyter Notebook (para ejecutar los cuadernos de análisis)
 
-### 1. Instalar PostgreSQL (última versión)
+## Configuración Inicial
 
-```bash
-sudo apt update
-sudo apt install wget ca-certificates -y
-wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-sudo apt update
-sudo apt install postgresql -y
-```
+### 1. Clonar el Repositorios
 
-Inicia el servicio:
+Primero, clona el repositorio:
 
 ```bash
-sudo service postgresql start
-```
 
-Crea el usuario y las bases de datos:
-
-```bash
-sudo -u postgres psql
-```
-
-Dentro de `psql`:
-
-```sql
-CREATE USER postgres WITH PASSWORD 'pg';
-ALTER USER postgres CREATEDB;
-\q
-```
-
-Luego crea las bases de datos necesarias:
-
-```bash
-createdb -U postgres -h localhost gra
-createdb -U postgres -h localhost gra_dimensional
-```
-
----
-
-### 2. Crear entorno virtual (fuera de la carpeta del repositorio)
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
----
-
-### 3. Instalar Apache Airflow
-
-```bash
-pip install apache-airflow
-```
-
----
-
-### 4. Clonar el repositorio dentro de `~/airflow/dags`
-
-```bash
-mkdir -p ~/airflow/dags
-cd ~/airflow/dags
 git clone https://github.com/ntlg72/ETL-Global-Road-Accidents.git
 ```
 
----
+### 2. Configurar Variables de Entorno
 
-### 5. Crear archivo `.env` en el directorio clonado
+Crea un archivo `.env` en el directorio raíz con las siguientes variables:
 
-Dentro de `~/airflow/dags/ETL-Global-Road-Accidents/`, crea el archivo `.env`:
+```ini
+# Configuración de Postgres
+PG_PASSWORD=tu_contraseña_segura
+PG_DATABASE=road_accidents
+PG_DATABASE_DIMENSIONAL=road_accidents_dimensional
+PG_DATABASE_KAFKA=road_accidents_kafka
+PG_PORT=5433
 
-```env
-PG_USER=postgres
-PG_PASSWORD=pg
-PG_HOST=<resultado de hostname -I>
-PG_PORT=5432
-PG_DATABASE=gra
-PG_DATABASE_DIMENSIONAL=gra_dimensional
+# Configuración de Airflow
+AIRFLOW_UID=50000
+AIRFLOW_GID=0
+_AIRFLOW_WWW_USER_USERNAME=admin
+_AIRFLOW_WWW_USER_PASSWORD=admin
 ```
 
-Para obtener la IP de tu máquina WSL2:
+### 3. Estructura del Proyecto
+
+Después de clonar, la estructura debería verse así:
+
+```
+docker-etl-pipeline/
+├── ETL-Global-Road-Accidents/
+│   ├── notebooks/
+│   │   └── 001_extraction.ipynb
+├── consumer.py
+├── docker-compose.yml
+├── .env
+└── logs/
+```
+Nótese que esto es una estructura reducida del directorio del proyecto.
+
+### 4. Iniciar los Servicios con Docker Compose
+
+Ejecuta el siguiente comando para iniciar todos los servicios:
 
 ```bash
-hostname -I
+docker-compose up -d --build
 ```
 
----
+Esto iniciará:
+- Zookeeper y Kafka para streaming de eventos
+- Bases de datos PostgreSQL
+- Redis como broker de mensajes para Airflow
+- Servicios de Airflow
+- El servicio consumer de Python
 
-### 6. Instalar requerimientos del proyecto
+### 5. Ejecutar el Notebook de Extracción
 
-Desde el entorno virtual activo:
+Después de que todos los servicios estén en funcionamiento:
+
+1. Navega al directorio de notebooks:
 
 ```bash
-pip install -r ~/airflow/dags/ETL-Global-Road-Accidents/requirements.txt
+cd ETL-Global-Road-Accidents/notebooks
 ```
 
----
-
-### 7. Ejecutar los notebooks (antes de iniciar Airflow)
-
-Los notebooks cargan y transforman los datos necesarios en las bases de datos. Es **obligatorio ejecutarlos antes de iniciar Airflow**.
+2. Instala Jupyter si no lo tienes:
 
 ```bash
-jupyter lab
+pip install jupyter
 ```
 
-Corre los siguientes notebooks, en orden:
-
-1. `001_e.ipynb` – Exploración inicial  
-2. `001_eda.ipynb` – Análisis exploratorio  
-3. `001_tl.ipynb` – Transformación y carga a PostgreSQL
-
----
-
-### 8. Inicializar Airflow
+3. Inicia Jupyter Notebook:
 
 ```bash
-airflow standalone
+jupyter notebook
 ```
 
-Esto creará la carpeta `~/airflow` y levantará el servidor web.
+4. Abre y ejecuta el notebook `001_extraction.ipynb`:
+   - Sigue las instrucciones dentro del notebook
+   - Asegúrate de que los servicios de Kafka y PostgreSQL estén corriendo
+   - Verifica las conexiones a las bases de datos
 
-Abre [http://localhost:8080](http://localhost:8080) y usa las credenciales generadas en la terminal para acceder.
+### 6. Acceder a los Servicios
 
----
+| Servicio         | URL/Puerto          | Credenciales            |
+|------------------|---------------------|-------------------------|
+| Airflow Web UI   | http://localhost:8080 | admin/admin           |
+| Flower (Celery)  | http://localhost:5555 | -                     |
+| Kafka            | localhost:9092      | -                     |
+| PostgreSQL (ETL) | localhost:5433      | Variables del .env    |
+| Consumer API     | http://localhost:8000 | -                     |
 
-## ✅ Ejecutar los DAGs
+### 7. Iniciar el Proceso ETL
 
-Desde el panel web de Airflow:
+1. **Accede a Airflow**: http://localhost:8080
+2. **Ejecuta el DAG**: Busca y activa el DAG `etl_accidents_pipeline`
+3. **Monitorea el progreso**: Puedes ver los logs en Airflow o con:
 
-- Habilita y ejecuta los DAGs disponibles.
-- Asegúrate de que el entorno virtual esté activo si haces pruebas en consola.
-
----
-
-## 📊 Integración con Power BI
-
-1. Abre Power BI Desktop.
-2. Selecciona _Obtener datos → PostgreSQL_.
-3. Conecta usando:
-   - **Servidor**: IP obtenida con `hostname -I`
-   - **Base de datos**: `gra` o `gra_dimensional`
-   - **Autenticación**: `postgres / pg`
-
----
-
-## 📁 Notebooks
-
-Puedes encontrar los notebooks en la carpeta `notebooks/` del repositorio clonado. Asegúrate de ejecutarlos en el orden correcto.
-
----
-
-## 📌 Requisitos
-
-- Python 3.12+
-- PostgreSQL (última versión disponible en WSL2)
-- Apache Airflow
-- Power BI Desktop
-- Visual Studio Code o editor de tu elección
+```bash
+docker logs consumer -f
+```
 
 ---
 
