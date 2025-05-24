@@ -21,7 +21,7 @@ logging.basicConfig(
 # Añadir el directorio raíz al sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from kafka_utils.producer import send_hechos_to_kafka
+from data.producer import send_hechos_to_kafka
 from source.extract.extract import extract_data
 from source.transform.transform import transform_accidents_data
 from source.load.load import create_dimensional_schema, procesar_y_guardar_modelo_dimensional, insert_csv_into_table

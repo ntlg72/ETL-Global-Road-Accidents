@@ -1,3 +1,5 @@
+version: '3.8'
+
 x-airflow-common: &airflow-common
   build: .
   environment: &airflow-common-env
@@ -10,17 +12,8 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
-    # yamllint disable rule:line-length
-    # Use simple http server on scheduler for health checks
-    # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
-    # yamllint enable rule:line-length
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
-    # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for quick checks.
-    # For other purposes (development, test, and especially production usage) build/extend the Airflow image.
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
-    # The following line can be used to set a custom config file, stored in the local config folder.
-    # If you want to use it, uncomment it and replace airflow.cfg with the name of your config file.
-    # AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
   volumes:
     - ${AIRFLOW_PROJ_DIR:-./dags}:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-./airflow}/logs:/opt/airflow/logs
@@ -36,8 +29,92 @@ x-airflow-common: &airflow-common
       condition: service_healthy
 
 services:
+  # Kafka services
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+    restart: unless-stopped
+    networks:
+      - kafka-network
+      - airflow-network
+    healthcheck:
+      test: ["CMD", "sh", "-c", "echo ruok | nc localhost 2181 | grep imok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_NUM_PARTITIONS: 3
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    restart: unless-stopped
+    networks:
+      - kafka-network
+      - airflow-network
+
+  consumer:
+    image: python:3.9
+    container_name: consumer
+    volumes:
+      - ./consumer.py:/app/consumer.py
+      - ./logs:/app/logs
+    working_dir: /app
+    command: >
+      bash -c "pip install confluent-kafka fastapi uvicorn pandas && python consumer.py"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - kafka
+    restart: unless-stopped
+    networks:
+      - kafka-network
+      - airflow-network
+
+  # Custom Postgres database
+  postgres_gra:
+    image: ntlg72/custom-postgres:1.0
+    container_name: postgres_gra
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      PG_DATABASE: ${PG_DATABASE}
+      PG_DATABASE_DIMENSIONAL: ${PG_DATABASE_DIMENSIONAL}
+      PG_DATABASE_KAFKA: ${PG_DATABASE_KAFKA}
+    ports:
+      - "${PG_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - airflow-network
+
+  # Airflow services
   postgres:
     image: postgres:13
+    container_name: postgres_airflow
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -50,11 +127,12 @@ services:
       retries: 5
       start_period: 5s
     restart: always
+    networks:
+      - airflow-network
 
   redis:
-    # Redis is limited to 7.2-bookworm due to licensing change.
-    # See: https://redis.io/blog/redis-adopts-dual-source-available-licensing/
     image: redis:7.2-bookworm
+    container_name: redis
     expose:
       - 6379
     healthcheck:
@@ -64,9 +142,12 @@ services:
       retries: 50
       start_period: 30s
     restart: always
+    networks:
+      - airflow-network
 
   airflow-webserver:
     <<: *airflow-common
+    container_name: airflow-webserver
     command: webserver
     ports:
       - "8080:8080"
@@ -81,9 +162,12 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    networks:
+      - airflow-network
 
   airflow-scheduler:
     <<: *airflow-common
+    container_name: airflow-scheduler
     command: scheduler
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
@@ -96,12 +180,14 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    networks:
+      - airflow-network
 
   airflow-worker:
     <<: *airflow-common
+    container_name: airflow-worker
     command: celery worker
     healthcheck:
-      # yamllint disable rule:line-length
       test:
         - "CMD-SHELL"
         - 'celery --app airflow.providers.celery.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}" || celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}"'
@@ -111,17 +197,18 @@ services:
       start_period: 30s
     environment:
       <<: *airflow-common-env
-      # Required to handle warm shutdown of the celery workers properly.
-      # See: https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
       DUMB_INIT_SETSID: "0"
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    networks:
+      - airflow-network
 
   airflow-triggerer:
     <<: *airflow-common
+    container_name: airflow-triggerer
     command: triggerer
     healthcheck:
       test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
@@ -134,11 +221,13 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    networks:
+      - airflow-network
 
   airflow-init:
     <<: *airflow-common
+    container_name: airflow-init
     entrypoint: /bin/bash
-    # yamllint disable rule:line-length
     command:
       - -c
       - |
@@ -187,7 +276,6 @@ services:
         mkdir -p /sources/logs /sources/dags /sources/plugins
         chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
         exec /entrypoint airflow version
-    # yamllint enable rule:line-length
     environment:
       <<: *airflow-common-env
       _AIRFLOW_DB_MIGRATE: 'true'
@@ -198,27 +286,27 @@ services:
     user: "0:0"
     volumes:
       - ${AIRFLOW_PROJ_DIR:-./airflow}:/sources
+    networks:
+      - airflow-network
 
   airflow-cli:
     <<: *airflow-common
+    container_name: airflow-cli
     profiles:
       - debug
     environment:
       <<: *airflow-common-env
       CONNECTION_CHECK_MAX_COUNT: "0"
-    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
     command:
       - bash
       - -c
       - airflow
+    networks:
+      - airflow-network
 
-  # You can enable Flower by adding the "--profile flower" option, for example:
-  # docker-compose --profile flower up
-  # or by explicitly targeting it on the command line, e.g.:
-  # docker-compose up flower.
-  # See: https://docs.docker.com/compose/profiles/
   flower:
     <<: *airflow-common
+    container_name: flower
     command: celery flower
     profiles:
       - flower
@@ -235,6 +323,17 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    networks:
+      - airflow-network
+
+networks:
+  kafka-network:
+    driver: bridge
+  airflow-network:
+    driver: bridge
 
 volumes:
+  zookeeper_data:
+  kafka_data:
+  postgres_data:
   postgres-db-volume:
